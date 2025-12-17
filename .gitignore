@@ -1,0 +1,12 @@
+# Ignore everything by default
+*
+
+# Un-ignore directories so Git can traverse them
+!*/
+
+# Un-ignore specific file types
+!*.cpp
+!*.sh
+
+# Keep the .gitignore file itself
+!.gitignore
