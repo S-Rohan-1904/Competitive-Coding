@@ -3,7 +3,7 @@
 
 # Un-ignore directories so Git can traverse them
 !*/
-
+cp-templates
 # Un-ignore specific file types
 !*.cpp
 !*.sh
