@@ -78,9 +78,7 @@ function select_option() {
     eval "selected_option=\${$((selected+1))}"
 }
 
-
-# Main script logic
-if [[ "$1" == "-c" ]]; then
+function handle_contest() {
   echo "Select a platform:"
   options=("Codeforces" "Code Chef" "AtCoder" "AZ" "Others")
 
@@ -93,23 +91,59 @@ if [[ "$1" == "-c" ]]; then
     read -p "Enter platform name: " platform
   fi
 
-  read -p "Enter contest name: " contestName
+  platformDir="$BASE_DIR/contests/$platform"
+  mkdir -p "$platformDir"
 
-  # Sanitize the name to create a valid directory name.
-  sanitizedName=$(echo "$contestName" | tr -cd '[:alnum:]_-' | cut -c1-100)
-  contestDir="$BASE_DIR/contests/$platform/$sanitizedName"
+  contest_options=("... Create new contest")
+  if [ -d "$platformDir" ]; then
+    # Read directories into the array, sorted
+    dirs_sorted=$(find "$platformDir" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort)
+    if [ -n "$dirs_sorted" ]; then
+      while IFS= read -r line; do
+          contest_options+=("$line")
+      done <<< "$dirs_sorted"
+    fi
+  fi
 
-  mkdir -p "$contestDir"
-  echo "Created contest directory: $contestDir"
-  open_in_vscode "$contestDir"
+  echo "Select a contest:"
+  select_option "${contest_options[@]}"
+  selected_contest=$selected_option
 
-elif [[ "$1" == "-p" ]]; then
+  if [[ "$selected_contest" == "... Create new contest" ]]; then
+    read -p "Enter contest name: " contestName
+    # Sanitize the name to create a valid directory name.
+    sanitizedName=$(echo "$contestName" | tr -cd '[:alnum:]_-' | cut -c1-100)
+    contestDir="$platformDir/$sanitizedName"
+    mkdir -p "$contestDir"
+    echo "Created contest directory: $contestDir"
+    open_in_vscode "$contestDir"
+  else
+    contestDir="$platformDir/$selected_contest"
+    echo "Opening contest directory: $contestDir"
+    open_in_vscode "$contestDir"
+  fi
+}
+
+function handle_practice() {
   practiceDir="$BASE_DIR/practice"
   mkdir -p "$practiceDir"
   echo "Opening practice directory."
   open_in_vscode "$practiceDir"
+}
 
-else
-  echo "Usage: $0 -c (for contest) or -p (for practice)"
-  exit 1
-fi
+# Main script logic
+echo "Select an option:"
+main_options=("Contest" "Practice" "Exit")
+select_option "${main_options[@]}"
+
+case $selected_option in
+  "Contest")
+    handle_contest
+    ;;
+  "Practice")
+    handle_practice
+    ;;
+  "Exit")
+    exit 0
+    ;;
+esac

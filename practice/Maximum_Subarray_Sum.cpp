@@ -44,34 +44,22 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1000000007;
 
-bool check(int mid, int k, int n) {
-  int cnt= 0;
-  rep(i,1,n+1) {
-    cnt+= min(n,mid/i);
-  }
-  if(cnt >= k) return 1;
-  return 0;
-}
-
-
 void solve()
 {
   int n;
   cin>>n;
-  int k = (n+1)/2;
+  vi arr(n);
+  inparr(arr);
 
-  int lo = 1,hi=n*n;
-  int ans = -1;
-  while(lo <=hi) {
-    int mid = lo + (hi-lo)/2;
-    if(check(mid, k, n)) {
-       hi = mid-1;
-      ans = mid;
-    }
-    else {
-     lo = mid+1;
-    }
+  int ans = 0;
+  int currSum = 0;
+  rep(i,0,n) {
+    currSum = max(arr[i], currSum + arr[i]);
+    ans = max(ans, currSum);
   }
+
+  cout<<ans<<nline;
+
 }
 
 signed main()
@@ -80,7 +68,7 @@ signed main()
   cin.tie(0);
   cout.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   while (t--)
     solve();
 }

@@ -21,7 +21,6 @@ using namespace std;
 #define mp make_pair
 #define ff first
 #define ss second
-
 #define int long long
 
 //---- Debugger ---- //
@@ -44,34 +43,28 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1000000007;
 
-bool check(int mid, int k, int n) {
-  int cnt= 0;
-  rep(i,1,n+1) {
-    cnt+= min(n,mid/i);
-  }
-  if(cnt >= k) return 1;
-  return 0;
-}
+// a>=c-d
 
+// 0 1 2 3
 
 void solve()
 {
-  int n;
-  cin>>n;
-  int k = (n+1)/2;
+  int n,d;
+  cin>>n>>d;
 
-  int lo = 1,hi=n*n;
-  int ans = -1;
-  while(lo <=hi) {
-    int mid = lo + (hi-lo)/2;
-    if(check(mid, k, n)) {
-       hi = mid-1;
-      ans = mid;
-    }
-    else {
-     lo = mid+1;
-    }
+  vi x(n);
+  inparr(x);
+
+  int ans=0;
+
+  rep(i,0,n) {
+    int idx = lower_bound(all(x), x[i] - d) - x.begin();
+    int len = i-idx;
+    ans += len*(len-1)/2;
   }
+
+  cout<<ans<<nline;
+
 }
 
 signed main()
@@ -80,7 +73,7 @@ signed main()
   cin.tie(0);
   cout.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   while (t--)
     solve();
 }

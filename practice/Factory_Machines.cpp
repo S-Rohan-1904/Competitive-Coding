@@ -24,6 +24,7 @@ using namespace std;
 
 #define int long long
 
+
 //---- Debugger ---- //
 #ifndef ONLINE_JUDGE
 #define debarr(a,n) cout<<#a<<" : ";for(int i=0;i<n;i++) cerr<<a[i]<<" "; cerr<<nline;
@@ -44,34 +45,42 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1000000007;
 
-bool check(int mid, int k, int n) {
-  int cnt= 0;
-  rep(i,1,n+1) {
-    cnt+= min(n,mid/i);
+bool check(int mid, const vi& x, int k) {
+  int cnt = 1;
+  int curr = 0;
+  rep(i,0,x.size()) {
+    if(curr + x[i] <= mid) curr += x[i];
+    else {
+      if(x[i] > mid) return 0;
+      cnt++;
+      curr= x[i];
+    }
   }
-  if(cnt >= k) return 1;
+  if(cnt<=k) return 1;
   return 0;
 }
 
-
 void solve()
 {
-  int n;
-  cin>>n;
-  int k = (n+1)/2;
+  int n,k;
+  cin>>n>>k;
 
-  int lo = 1,hi=n*n;
+  vi x(n);
+  inparr(x);
+
+  int lo = 0, hi = accumulate(all(x),0LL);
   int ans = -1;
   while(lo <=hi) {
     int mid = lo + (hi-lo)/2;
-    if(check(mid, k, n)) {
+    if(check(mid, x, k)) {
        hi = mid-1;
-      ans = mid;
+       ans = mid;
     }
     else {
      lo = mid+1;
     }
   }
+  cout<<ans<<nline;
 }
 
 signed main()
