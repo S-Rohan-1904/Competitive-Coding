@@ -8,6 +8,7 @@ using namespace std;
 #define prn cout << "NO" << nline
 #define pry cout << "YES" << nline
 #define vi vector<int>
+#define vvi vector<vi>
 #define eb emplace_back
 #define all(a) (a).begin(), (a).end()
 #define rall(a) (a).rbegin(), (a).rend()
@@ -22,7 +23,9 @@ using namespace std;
 #define ss second
 
 #define int long long
+
 //---- Debugger ---- //
+#ifdef LOCAL
 #define debarr(a,n) cout<<#a<<" : ";for(int i=0;i<n;i++) cerr<<a[i]<<" "; cerr<<nline;
 #define debmat(mat,row,col) cout<<#mat<<" :\n";for(int i=0;i<row;i++) {for(int j=0;j<col;j++) cerr<<mat[i][j]<<" ";cerr<<nline;}
 #define pr(...) dbs(#__VA_ARGS__, __VA_ARGS__)
@@ -36,52 +39,44 @@ template <class S, class T>ostream& operator <<(ostream& os, const map<S, T>& p)
 template <class T> void dbs(string str, T t) {cerr << str << " : " << t << "\n";}
 template <class T, class... S> void dbs(string str, T t, S... s) {int idx = str.find(','); cerr << str.substr(0, idx) << " : " << t << ","; dbs(str.substr(idx + 1), s...);}
 template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {if (i != a) cerr << ", "; cerr << *i;} cerr << "]\n";}
+#else
+#define pr(...)
+#endif
 //----------------- //
 
 const int MOD = 1000000007;
 
-int solve1(int n, vi arr) {
-  int sum = 0;
-  rep(i,1,n) sum+=arr[i];
-  return sum;
+
+
+vi choices;
+int n,k;
+
+vi factorials(100001);
+
+void pre() {
+  factorials[0] = 1;
+  factorials[1] = 1;
+  rep(i,1,100001) factorials[i] = factorials[i-1] * i;
 }
 
-int brute(int n, vi arr) {
-  int sum = 0;
-  rep(i,0,n) sum+=arr[i];
-  return sum;
+void kth_perm(int level, int k) {
+  if(level ==0) return;
+  int temp = factorials[level-1];
+  int idx = k/temp;
+  cout<< choices[idx]<<" ";
+
+  choices.erase(choices.begin() + idx);
+
+  kth_perm(level-1, k%temp);
 }
 
-int get_rand(int a, int b) {
-  return a + rand()%(b-a+1);
-} 
-  
-
-void gen() {
-  while(1) {
-    int n;
-    n = get_rand(5,10);
-    vi arr(n);
-    rep(i,0,n) arr[i] = get_rand(1,100);
-    if(solve1(n,arr) != brute(n,arr)) {
-      cout<<n<<nline;
-      rep(i,0,n) cout<<arr[i]<<" ";
-      cout<<nline;
-
-      cout<<solve1(n,arr)<<nline;
-      cout<<brute(n,arr)<<nline;
-    }
-  }
+void solve()
+{
+    cin>>n>>k;
+    rep(i,1,n+1) choices.eb(i);
+    k--;
+    kth_perm(n,k);
 }
-
-// void solve()
-// {
-//   int n;
-//   cin>>n;
-//   int arr[n];
-//   rep(i,0,n) cin>>arr[i];
-//   cout<<solve1(n, arr);
-// }
 
 signed main()
 {
@@ -90,7 +85,7 @@ signed main()
   cout.tie(0);
   int t = 1;
   // cin >> t;
+  pre();
   while (t--)
-    // solve();
-    gen();
+    solve();
 }

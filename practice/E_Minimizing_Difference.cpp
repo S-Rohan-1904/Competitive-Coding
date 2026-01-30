@@ -8,6 +8,7 @@ using namespace std;
 #define prn cout << "NO" << nline
 #define pry cout << "YES" << nline
 #define vi vector<int>
+#define vvi vector<vi>
 #define eb emplace_back
 #define all(a) (a).begin(), (a).end()
 #define rall(a) (a).rbegin(), (a).rend()
@@ -22,7 +23,9 @@ using namespace std;
 #define ss second
 
 #define int long long
+
 //---- Debugger ---- //
+#ifndef ONLINE_JUDGE
 #define debarr(a,n) cout<<#a<<" : ";for(int i=0;i<n;i++) cerr<<a[i]<<" "; cerr<<nline;
 #define debmat(mat,row,col) cout<<#mat<<" :\n";for(int i=0;i<row;i++) {for(int j=0;j<col;j++) cerr<<mat[i][j]<<" ";cerr<<nline;}
 #define pr(...) dbs(#__VA_ARGS__, __VA_ARGS__)
@@ -36,52 +39,60 @@ template <class S, class T>ostream& operator <<(ostream& os, const map<S, T>& p)
 template <class T> void dbs(string str, T t) {cerr << str << " : " << t << "\n";}
 template <class T, class... S> void dbs(string str, T t, S... s) {int idx = str.find(','); cerr << str.substr(0, idx) << " : " << t << ","; dbs(str.substr(idx + 1), s...);}
 template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {if (i != a) cerr << ", "; cerr << *i;} cerr << "]\n";}
+#endif
 //----------------- //
 
 const int MOD = 1000000007;
 
-int solve1(int n, vi arr) {
-  int sum = 0;
-  rep(i,1,n) sum+=arr[i];
-  return sum;
-}
+int n,k;
+vi a;
+vi pre;
 
-int brute(int n, vi arr) {
-  int sum = 0;
-  rep(i,0,n) sum+=arr[i];
-  return sum;
-}
-
-int get_rand(int a, int b) {
-  return a + rand()%(b-a+1);
-} 
-  
-
-void gen() {
-  while(1) {
-    int n;
-    n = get_rand(5,10);
-    vi arr(n);
-    rep(i,0,n) arr[i] = get_rand(1,100);
-    if(solve1(n,arr) != brute(n,arr)) {
-      cout<<n<<nline;
-      rep(i,0,n) cout<<arr[i]<<" ";
-      cout<<nline;
-
-      cout<<solve1(n,arr)<<nline;
-      cout<<brute(n,arr)<<nline;
-    }
+bool valid(int l, int r) {
+  int pos = upper_bound(all(a), r) - a.begin();
+  int moves = 0;
+  if(pos<n) {
+    moves+= (pre[n-1] - (pos==0 ? 0 : pre[pos-1])) - (n-pos)*r;
   }
+  pos = lower_bound(all(a),l) - a.begin();
+  if(pos!=0) {
+    moves+=pos*l - pre[pos-1];
+  }
+  return moves <= k;
 }
 
-// void solve()
-// {
-//   int n;
-//   cin>>n;
-//   int arr[n];
-//   rep(i,0,n) cin>>arr[i];
-//   cout<<solve1(n, arr);
-// }
+bool check(int mid) {
+  rep(i,0,n) {
+    if(valid(a[i], a[i] + mid) || valid(a[i]-mid, a[i])) return true;
+  }
+  return false;
+}
+
+void solve()
+{
+  cin>>n>>k;
+  a.resize(n);
+  pre.resize(n);
+  rep(i,0,n) cin>>a[i];
+  sort(all(a));
+
+  pre[0] = a[0];
+
+  rep(i,1,n) {
+    pre[i] = a[i] + pre[i-1];
+  }
+
+  int lo = 0, hi = *max_element(all(a)) - *min_element(all(a));
+  int ans = -1;
+  while(lo <= hi) {
+    int mid = (lo + hi)/2;
+    if(check(mid)) {
+      hi=mid-1;
+      ans = mid;
+    } else lo = mid+1;
+  }
+  cout<<ans<<nline;
+}
 
 signed main()
 {
@@ -91,6 +102,5 @@ signed main()
   int t = 1;
   // cin >> t;
   while (t--)
-    // solve();
-    gen();
+    solve();
 }

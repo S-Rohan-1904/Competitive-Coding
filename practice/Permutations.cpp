@@ -21,7 +21,7 @@ using namespace std;
 #define ff first
 #define ss second
 
-#define int long long
+
 //---- Debugger ---- //
 #define debarr(a,n) cout<<#a<<" : ";for(int i=0;i<n;i++) cerr<<a[i]<<" "; cerr<<nline;
 #define debmat(mat,row,col) cout<<#mat<<" :\n";for(int i=0;i<row;i++) {for(int j=0;j<col;j++) cerr<<mat[i][j]<<" ";cerr<<nline;}
@@ -39,49 +39,36 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 //----------------- //
 
 const int MOD = 1000000007;
+#define int long long
+//<=k
+// 0 1 2 3 4
+// 1 0 1 1 0 1 1 0 0 1
+// 0 1 2 3 4 5 6 7
+// 
+void solve()
+{
+  int n,k;
+  cin>>n>>k;
 
-int solve1(int n, vi arr) {
-  int sum = 0;
-  rep(i,1,n) sum+=arr[i];
-  return sum;
-}
+  vi arr(n);
+  inparr(arr);
 
-int brute(int n, vi arr) {
-  int sum = 0;
-  rep(i,0,n) sum+=arr[i];
-  return sum;
-}
-
-int get_rand(int a, int b) {
-  return a + rand()%(b-a+1);
-} 
-  
-
-void gen() {
-  while(1) {
-    int n;
-    n = get_rand(5,10);
-    vi arr(n);
-    rep(i,0,n) arr[i] = get_rand(1,100);
-    if(solve1(n,arr) != brute(n,arr)) {
-      cout<<n<<nline;
-      rep(i,0,n) cout<<arr[i]<<" ";
-      cout<<nline;
-
-      cout<<solve1(n,arr)<<nline;
-      cout<<brute(n,arr)<<nline;
-    }
+  vi prefix(n);
+  prefix[0] = 1-arr[0];
+  rep(i,1,n) {
+    prefix[i] = prefix[i-1] + 1 - arr[i];
   }
-}
+  pr(prefix);
+  int ans=LLONG_MIN;
+  rep(i,0,n) {
 
-// void solve()
-// {
-//   int n;
-//   cin>>n;
-//   int arr[n];
-//   rep(i,0,n) cin>>arr[i];
-//   cout<<solve1(n, arr);
-// }
+    int cnt = upper_bound(prefix.begin()+i, prefix.end(), k + (i==0 ? 0:prefix[i-1])) - (prefix.begin() +i);
+    // pr(i, cnt);
+    ans = max(ans, cnt);
+  }
+  cout<<ans<<nline;
+
+}
 
 signed main()
 {
@@ -89,8 +76,7 @@ signed main()
   cin.tie(0);
   cout.tie(0);
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--)
-    // solve();
-    gen();
+    solve();
 }

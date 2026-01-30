@@ -44,30 +44,29 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1000000007;
 
-bool check(int mid, int k, int n) {
+bool check(int mid, int k, const vi& a) {
   int cnt= 0;
-  rep(i,1,n+1) {
-    cnt += min(n,mid/i);
+  rep(i,1,a.size()) {
+    cnt += (a[i] - a[i-1] + mid-1)/mid - 1;
   }
-  // pr(cnt);
-  return cnt >= k;
+  return cnt<=k;
 }
 
 
 void solve()
 {
-  int n;
-  cin>>n;
-
-  int k = (n*n+1)/2;
+  int n,k;
+  cin >> n >> k;
+  vi a(n);
+  inparr(a);
   // pr(k);
-  int lo = 1, hi=n*n;
+  int lo = 1, hi=a[n-1] - a[0];
   int ans = -1;
 
   while(lo <=hi) {
     int mid = lo + (hi-lo)/2;
     // pr(mid, ans);
-    if(check(mid, k, n)) {
+    if(check(mid, k, a)) {
       hi = mid-1;
       ans = mid;
     }
