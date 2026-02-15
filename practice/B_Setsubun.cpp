@@ -46,15 +46,37 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1000000007;
 
-void recurse(int n)
-{
-    if (n == 0)
-    return;
-    n = n/10;
-    recurse(n);
-    cout<<n<<nline;
+bool check(int mid,int n,int k) {
+  if(n*(mid+1) + mid*(mid+1)/2 >= k) return 1;
+  return 0;
 }
-int main() {
-    recurse(1234);
-    return 0;
+
+void solve()
+{
+  ll n,k;
+  cin>>n>>k;
+  ll lo = 0, hi = 1e9+1;
+
+  ll ans = -1;
+
+  while(lo<=hi) {
+    int mid = lo + (hi-lo)/2;
+    if(check(mid, n , k)) {
+      ans = mid;
+      hi = mid -1;
+    } else lo = mid+1;
+  }
+
+  cout<<ans<<nline;
+}
+
+signed main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+  int t = 1;
+  // cin >> t;
+  while (t--)
+    solve();
 }

@@ -22,7 +22,7 @@ using namespace std;
 #define ff first
 #define ss second
 
-#define int long long
+// #define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -46,15 +46,32 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1000000007;
 
-void recurse(int n)
-{
-    if (n == 0)
-    return;
-    n = n/10;
-    recurse(n);
-    cout<<n<<nline;
+void solve() {
+  int n;
+  cin >> n;
+  
+  vi p(n), arr(n);
+  inparr(p);
+  inparr(arr);
+  
+  map<int, int> idx;
+  rep(i,0,n) idx[p[i]] = i;
+  
+  rep(i,1,n) {
+    if(arr[i] != arr[i-1] && idx[arr[i]] < idx[arr[i-1]]) {
+      prn;
+      return;
+    }
+  }
+  pry;
 }
-int main() {
-    recurse(1234);
-    return 0;
+signed main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+  int t = 1;
+  cin >> t;
+  while (t--)
+    solve();
 }

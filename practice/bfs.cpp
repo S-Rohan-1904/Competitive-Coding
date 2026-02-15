@@ -22,7 +22,7 @@ using namespace std;
 #define ff first
 #define ss second
 
-#define int long long
+// #define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -46,15 +46,62 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1000000007;
 
-void recurse(int n)
-{
-    if (n == 0)
-    return;
-    n = n/10;
-    recurse(n);
-    cout<<n<<nline;
+vvi g;
+vi vis;
+void dfs(int node) {
+    vis[node] = 1;
+    for(auto v: g[node]) {
+        if(!vis[v]) {
+            dfs(v);
+        }
+    }
 }
-int main() {
-    recurse(1234);
-    return 0;
+
+vvi g;
+vi vis;
+vi dist;
+void bfs(int start_node) {
+    vi nw, old;
+    old.push_back(start_node);
+    vis[start_node] = 1;
+    while(!old.empty()) {
+        for (auto v: old){
+            for(auto u : g[v]) {
+                if (!vis[v]){
+                    nw.push_back(v);
+                    vis[v] = true;
+                }
+            }
+        }
+        old = std::move(nw);
+    }
+}
+
+
+
+void solve()
+{
+    int n,m;
+    cin>>n>>m;
+    g.assign(n+1, vi(m, 0));
+    vis.assign(n+1,0);
+
+    rep(i,1,n+1) {
+        rep(j,0,m) {
+            cin>>g[i][j];
+        }
+    }
+
+    
+}
+
+signed main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+  int t = 1;
+  cin >> t;
+  while (t--)
+    solve();
 }

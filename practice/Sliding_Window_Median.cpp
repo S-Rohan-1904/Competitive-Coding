@@ -46,15 +46,105 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1000000007;
 
-void recurse(int n)
+struct ds {
+  multiset<int> low, high;
+  int left_sum = 0, right_sum = 0;
+
+  void rebalance() {
+    int target_len = (low.size() + high.size() + 1)/2;
+
+    while(low.size() < target_len) {
+      int temp = *high.begin();
+      high.erase(high.begin());
+      right_sum-=temp;
+      low.insert(temp);
+      left_sum+=temp;
+    }
+
+    while(low.size() > target_len) {
+      int temp = *low.rbegin();
+      low.erase(prev(low.end()));
+      left_sum-=temp;
+      high.insert(temp);
+      right_sum+=temp;
+    }
+  }
+
+  void insert(int x) {
+    if(low.empty()) {
+      low.insert(x);
+      left_sum+=x;
+    } else {
+      if(x <= *low.rbegin()) {
+        low.insert(x);
+        left_sum+=x;
+      } else {
+        high.insert(x);
+        right_sum+=x;
+      }
+    }
+    rebalance();
+  }
+
+  void remove(int x) {
+    if(x <= *low.rbegin()) {
+      auto it = low.find(x);
+      if(it!= low.end()) {
+        low.erase(it);
+        left_sum-=x;
+      }
+    } else {
+      auto it = high.find(x);
+      if(it != high.end()) {
+        high.erase(it);
+        right_sum-=x;
+      }
+    }
+    rebalance();
+  }
+
+  void get_median() {
+    cout<<*low.rbegin()<<" ";
+  }
+
+  void get_cost() {
+    int median = *low.rbegin();
+    // pr(low, high);
+    // pr(median);
+    int cost  =(low.size() - high.size())*median + right_sum - left_sum;
+    cout<< (low.size() - high.size())*median + right_sum - left_sum<<" ";
+    // pr(cost);
+    // in last iter balancing didn;t happen properly
+  }
+
+
+};
+
+void solve()
 {
-    if (n == 0)
-    return;
-    n = n/10;
-    recurse(n);
-    cout<<n<<nline;
+  int n,k;
+  cin>>n>>k;
+
+  vi arr(n);
+  inparr(arr);
+  ds data_structure;
+
+  rep(i,0,n) {
+    data_structure.insert(arr[i]);
+    if(i-k>=0) data_structure.remove(arr[i-k]);
+    if(i-k >= -1) data_structure.get_median();
+
+  }
+  cout<<nline;
 }
-int main() {
-    recurse(1234);
-    return 0;
+
+signed main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+  int t = 1;
+  // cin >> t;
+  while (t--)
+    solve();
 }

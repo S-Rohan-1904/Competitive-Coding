@@ -22,7 +22,7 @@ using namespace std;
 #define ff first
 #define ss second
 
-#define int long long
+// #define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -46,15 +46,67 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1000000007;
 
-void recurse(int n)
+void solve()
 {
-    if (n == 0)
-    return;
-    n = n/10;
-    recurse(n);
-    cout<<n<<nline;
+  int n, k;
+  cin>>n>>k;
+  vector<string> arr;
+  rep(i,0,k) {
+    string str;
+    cin>>str;
+    arr.eb(str);
+  }
+
+  map<char, set<int>> freq_idx;
+
+  rep(i,0,k) {
+    rep(j,0,n) {
+      freq_idx[arr[i][j]].insert(j);
+    }
+  }
+
+
+  rep(len, 1, n+1) {
+    if (n % len != 0) continue;
+    string ans = "";
+    rep(i, 0, len) {
+      for (char ch = 'a'; ch <= 'z'; ch++) {
+        if(freq_idx[ch].find(i) == freq_idx[ch].end()) continue;
+        int j = i;
+        bool found = true;
+        while (j < n) {
+            auto it = freq_idx[ch].find(j);
+            if (it == freq_idx[ch].end()) {
+                found = false;
+                break;
+            }
+            j += len;
+        }
+        if (found) {
+            ans.push_back(ch);
+            break;
+        }
+      }
+      if(ans.size() != i+1) break;
+    }
+    if(ans.size() == len) {
+      int temp = n/len;
+      rep(i,0,temp) {
+        cout << ans;
+      }
+      cout<<nline;
+      return;
+    }
+  }
 }
-int main() {
-    recurse(1234);
-    return 0;
+
+signed main()
+{
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+  int t = 1;
+  cin >> t;
+  while (t--)
+    solve();
 }
