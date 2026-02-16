@@ -46,106 +46,19 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1000000007;
 
-#define INF 1e9
-
-using state = pii;
-
-vector<vector<char>> g;
-vvi vis;
-vvi dist;
-int n,m;
-
-int dx[] = {0,0,-1,1};
-int dy[] = {1,-1,0,0};
-
-vector<vector<state>> parents;
-
-bool is_valid(int x, int y) {
-  if( x>=0 && x<n && y>=0 && y<m && g[x][y] != '#') return 1;
-  return 0;
-}
-
-vector<state> children(state node) {
-  vector<state> childs;
-  rep(i,0,4) {
-    int nx = node.ff + dx[i];
-    int ny = node.ss + dy[i];
-
-    if(is_valid(nx,ny)) {
-      childs.eb(nx,ny);
-    }
-  } 
-  return childs;
-}
-
-void bfs(state st) {
-  queue<state> q;
-
-  q.push(st);
-  dist[st.ff][st.ss] = 0;
-  vis[st.ff][st.ss] = 1;
-
-
-  while(!q.empty()) {
-    state node = q.front();
-    q.pop();
-
-    for(auto v : children(node)) {
-      if(!vis[v.ff][v.ss]) {
-        vis[v.ff][v.ss] = 1;
-        q.push(v);
-        dist[v.ff][v.ss] = dist[node.ff][node.ss] + 1;
-        parents[v.ff][v.ss] = node;
-      } 
-    }
-
-  }
-}
-
 void solve()
 {
-  cin>>n>>m;
-
-  g.assign(n, vector<char>(m));
-  vis.assign(n, vi(m,0));
-  dist.assign(n, vi(m,INF));
-  parents.assign(n, vector<state>(m, {-1,-1}));
-
-  state st,en;
-
+  int n;
+  cin>>n;
+  vi arr(n);
+  inparr(arr);
+  bool temp2 = 0;
   rep(i,0,n) {
-    string str;
-    cin>>str;
-    rep(j,0,m) {
-      g[i][j] = str[j];
-      if(g[i][j] == 'A') st = {i,j};
-      else if(g[i][j] == 'B') en = {i,j};
-    }
+    if(arr[i] == 67) temp2=1;
   }
 
-  bfs(st);
-
-  if(vis[en.ff][en.ss]) {
-    pry;
-    cout<<dist[en.ff][en.ss]<<nline;
-    vector<state> path;
-
-    state curr = en;
-    while(curr != mp(-1,-1)) {
-      path.eb(curr);
-      curr = parents[curr.ff][curr.ss];
-    }
-    reverse(all(path));
-    state prev = st;
-    for(auto v : path) {
-      if(v.ff > prev.ff) cout<<"D"; //d
-      else if(v.ff < prev.ff) cout<<"U"; //u
-      else if(v.ss > prev.ss) cout<<"R";//r
-      else if(v.ss < prev.ss) cout<<"L";//l
-      prev = v;
-    }
-    cout<<nline; 
-  } else prn;
+  if(temp2)pry;
+  else prn;
 }
 
 signed main()
@@ -154,7 +67,7 @@ signed main()
   cin.tie(0);
   cout.tie(0);
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--)
     solve();
 }
