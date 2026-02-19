@@ -44,8 +44,7 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 #endif
 //----------------- //
 
-const int MOD = 1e9 + 7;
-const int INF = 1e9 + 1;
+const int MOD = 1000000007;
 
 void solve()
 {

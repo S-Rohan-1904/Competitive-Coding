@@ -44,11 +44,59 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 #endif
 //----------------- //
 
-const int MOD = 1e9 + 7;
+const int MOD = 1000000007;
 const int INF = 1e9 + 1;
 
+using state = pii;
+
+vector<vector<char>> g;
+vvi dist;
+vector<state> monsters;
+int n,m;
+
+
+int dx[] = {0,0,1,-1};
+int dy[] = {1,-1,0,1};
+
+void bfs() {
+  queue<state> q;
+  for(auto monster : monsters) {
+    q.push(monster);
+    dist[monster.ff][monster.ss] = 0;
+  }
+
+  while (!q.empty()) {
+    state front = q.front();
+    q.pop();
+
+    rep(i,0,4) {
+      int nx = front.ff + dx[i];
+      int ny = front.ss + dy[i];
+      if(nx >=0 && nx<n && ny>=0 && ny<m && dist[nx][ny] == INF) {
+        dist[nx][ny] = dist[front.ff][front.ss] + 1;
+        q.push({nx,ny});
+      }
+    }
+  }
+}
 void solve()
 {
+  cin>>n>>m;
+
+  g.resize(n, vector<char>(m));
+  dist.assign(n,vi(m, INF));
+  state st;
+  rep(i,0,n) {
+    rep(j,0,m) {
+      cin>>g[i][j];
+      if(g[i][j] == 'M') monsters.eb(i,j);
+      if(g[i][j] == 'A') st = {i,j};
+    }
+  }
+
+
+  bfs();
+
 }
 
 signed main()
