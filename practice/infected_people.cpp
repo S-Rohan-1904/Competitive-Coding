@@ -44,131 +44,68 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 #endif
 //----------------- //
 
-const int MOD = 1000000007;
+const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 using state = pii;
 
-vector<vector<char>> g;
-vvi distMon;
-vvi distPer;
-vector<state> monsters;
-vector<state> exits;
-vector<vector<state>> parents;
-state st;
-int n,m;
-
+vvi g;
+vvi dist;
+vector<state> infected;
 
 int dx[] = {0,0,1,-1};
 int dy[] = {1,-1,0,0};
+int n,m;
+int maxx = 0;
 
-void bfsMonster() {
-  queue<state> q;
-  for(auto monster : monsters) {
-    q.push(monster);
-    distMon[monster.ff][monster.ss] = 0;
-  }
+void bfs() {
+    queue<state> q;
 
-  while (!q.empty()) {
-    state front = q.front();
-    q.pop();
-
-    rep(i,0,4) {
-      int nx = front.ff + dx[i];
-      int ny = front.ss + dy[i];
-      if(nx >=0 && nx<n && ny>=0 && ny<m && distMon[nx][ny] == INF && g[nx][ny] != '#') {
-        distMon[nx][ny] = distMon[front.ff][front.ss] + 1;
-        // pr(front.ff,front.ss);
-        // pr(nx,ny,distMon[nx][ny]);
-        q.push({nx,ny});
-      }
+    for(auto v : infected) {
+        q.push(v);
+        dist[v.ff][v.ss] = 0;
     }
-  }
+
+    while(!q.empty()) {
+        state front = q.front();
+        q.pop();
+
+        rep(i,0,4) {
+            int nx = front.ff + dx[i];
+            int ny = front.ss + dy[i];
+            if(nx >=0 && nx<n && ny>=0 && ny<m && g[nx][ny] == 1) {
+                q.push({nx,ny});
+                dist[nx][ny] = dist[front.ff][front.ss] + 1;
+                maxx = max(maxx, dist[nx][ny]);
+                g[nx][ny] = 2;
+            }
+        }
+    }
 }
 
-void bfsPerson() {
-  queue<state> q;
-  q.push(st);
-  distPer[st.ff][st.ss] = 0;
-  while (!q.empty()) {
-    state front = q.front();
-    q.pop();
-
-    rep(i,0,4) {
-      int nx = front.ff + dx[i];
-      int ny = front.ss + dy[i];
-      if(nx >=0 && nx<n && ny>=0 && ny<m && distPer[nx][ny] == INF && g[nx][ny] != '#') {
-        distPer[nx][ny] = distPer[front.ff][front.ss] + 1;
-        parents[nx][ny] = {front.ff, front.ss};
-        // pr(nx, ny, distPer[nx][ny]);
-        q.push({nx,ny});
-      }
-    }
-  }
-}
 void solve()
 {
-  cin>>n>>m;
+    cin>>n>>m;
+    g.resize(n, vi(m));
+    dist.assign(n, vi(m,INF));
 
-  g.resize(n, vector<char>(m));
-  distMon.assign(n,vi(m, INF));
-  distPer.assign(n,vi(m, INF));
-  parents.assign(n,vector<state>(m, {-1,-1}));
-  rep(i,0,n) {
-    rep(j,0,m) {
-      cin>>g[i][j];
-      if((g[i][j] == '.' || g[i][j] == 'A')&& (i==0 || j== 0 || i == n-1 || j== m-1) ) exits.eb(i,j);
-      if(g[i][j] == 'M') monsters.eb(i,j);
-      if(g[i][j] == 'A') st = {i,j};
+    rep(i,0,n) {
+        rep(j,0,m) {
+            cin>>g[i][j];
+            if(g[i][j] == 2) infected.eb(i,j);
+        }
     }
-  }
-
-
-  bfsMonster();
-  bfsPerson();
-
-  // pr(monsters);
-  pr(exits);
-
-  bool ans = false;
-  state end;
-  for(auto exit : exits) {
-    if(distMon[exit.ff][exit.ss] > distPer[exit.ff][exit.ss]) {
-      pr(exit);
-      // pr(distMon[exit.ff][exit.ss]);
-      // pr(distPer[exit.ff][exit.ss]);
-      ans = true;
-      end = exit;
-      break;
-    }
-  }
-
-  vector<state> path;
-
-  if(ans) {
-    pry;
-    cout<< distPer[end.ff][end.ss]<<nline;
-    state temp = end;
-    while(temp != mp(-1,-1)) {
-      path.eb(temp);
-      temp = parents[temp.ff][temp.ss];
+    bfs();
+    rep(i,0,n) {
+        rep(j,0,m) {
+            if(g[i][j] == 1) {
+                cout<<-1<<nline;
+                return;
+            }
+        }
     }
 
-    reverse(all(path));
-    state prev = path[0];
-    rep(i,1,path.size()) {
-      state curr = path[i];
-      if(curr.ff == prev.ff + 1) cout<<"D";
-      else if(curr.ff == prev.ff - 1) cout<<"U";
-      else if(curr.ss == prev.ss + 1) cout<<"R";
-      else if(curr.ss == prev.ss - 1) cout<<"L";
-      prev = curr;
-    }
-    cout<<nline;
-    // pr(path);
-  }
-  else prn;
-
+    cout<<maxx<<nline;
 }
 
 signed main()
@@ -177,7 +114,7 @@ signed main()
   cin.tie(0);
   cout.tie(0);
   int t = 1;
-  // cin >> t;
+//   cin >> t;
   while (t--)
     solve();
 }
