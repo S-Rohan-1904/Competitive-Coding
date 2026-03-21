@@ -44,74 +44,72 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 #endif
 //----------------- //
 
-const int MOD = 1000000007;
+const int MOD = 1e9 + 7;
+const int INF = 1e9 + 1;
 
+int n,m;
 vvi g;
-vi vis;
-void dfs(int node) {
-    vis[node] = 1;
-    for(auto v: g[node]) {
-        if(!vis[v]) {
-            dfs(v);
-        }
-    }
-}
+vvi dist;
+vvi vis;
 
-vvi g;
-vi vis;
-vi dist;
+int dx[] = {0,0,1,-1};
+int dy[] = {1,-1,0,0};
+int color[] = {3, 4, 1, 2};
+using state = pii;
+void bfs01(state st) {
+    deque<state> dq;
+    dq.push_front(st);
+    dist[st.ff][st.ss] = 0;
 
-void bfs(int start_node) {
-    vi nw, old;
-    old.push_back(start_node);
-    vis[start_node] = 1;
-    while(!old.empty()) {
-        for (auto v: old){
-            for(auto u : g[v]) {
-                if (!vis[v]){
-                    nw.push_back(v);
-                    vis[v] = true;
+    while (!dq.empty())
+    {
+        state front = dq.front();
+        dq.pop_front();
+
+        if(vis[front.ff][front.ss]) continue;
+        vis[front.ff][front.ss] = 1;
+
+        rep(i,0,4) {
+            int nx = front.ff + dx[i];
+            int ny = front.ss + dy[i];
+            if(nx>=0 && nx<n && ny>=0 && ny<m) {
+                int cost = 1;
+                if(color[i] == g[nx][ny]) cost = 0;
+                if(dist[nx][ny] > dist[front.ff][front.ss] + cost) {
+                    dist[nx][ny] = dist[front.ff][front.ss] + cost;
+                    if(cost == 0) dq.push_front({nx,ny});
+                    else dq.push_back({nx,ny});
                 }
             }
         }
-        old = move(nw);
     }
-}
+    
 
-
-void bfs(int start_node) {
-    queue<int> q;
-    q.push(start_node);
-    dist[start_node] = 0;
-
-    while(!q.empty()) {
-        int front = q.front();
-        q.pop();
-        if(vis[front]) continue;
-        vis[front] = 1;
-        for(auto v : g[front]) {
-            if(!vis[v]) {
-                q.push(v);
-                dist[v] = dist[front] + 1;
-            }
-        }
-    }
 }
 
 void solve()
 {
-    int n,m;
     cin>>n>>m;
-    g.assign(n+1, vi(m, 0));
-    vis.assign(n+1,0);
+    g.resize(n, vi(m));
+    dist.assign(n, vi(m, INF));
+    vis.assign(n, vi(m, 0));
 
-    rep(i,1,n+1) {
+    rep(i,0,n) {
         rep(j,0,m) {
             cin>>g[i][j];
         }
     }
 
-    
+    bfs01({0,0});
+
+    rep(i,0,n) {
+        rep(j,0,m) {
+            cout<< dist[i][j]<<" ";
+        }
+        cout<<nline;
+    }
+
+    cout << dist[n-1][m-1]<<nline;
 }
 
 signed main()
@@ -120,7 +118,7 @@ signed main()
   cin.tie(0);
   cout.tie(0);
   int t = 1;
-  cin >> t;
+//   cin >> t;
   while (t--)
     solve();
 }

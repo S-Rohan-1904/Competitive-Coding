@@ -23,30 +23,27 @@ using namespace std;
 #define ss second
 int n, m;
 
-// Corrected types: 
-// dist: stores shortest path
-// g: vector of vectors of pairs {neighbor, weight}
 vi dist;
 vector<vector<pii>> g; 
+vi vis;
 
 void zero_one_bfs(int start) {
     deque<int> dq;
 
     dist[start] = 0;
-    dq.push_back(start);
+    dq.push_front(start);
 
     while (!dq.empty()) {
-        int u = dq.front();
+        int front = dq.front();
         dq.pop_front();
 
-        for (auto &edge : g[u]) {
-            int v = edge.ff;
-            int weight = edge.ss;
+        if(vis[front]) continue;
+        vis[front] = 1;
 
-            if (dist[u] + weight < dist[v]) {
-                dist[v] = dist[u] + weight;
-                
-                if (weight == 0) {
+        for (auto &[v,w] : g[front]) {
+            if (dist[v] > dist[front] + w) {
+                dist[v] = dist[front] + w;
+                if (w == 0) {
                     dq.push_front(v);
                 } else {
                     dq.push_back(v);

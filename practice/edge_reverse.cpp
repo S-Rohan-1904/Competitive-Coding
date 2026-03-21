@@ -44,74 +44,73 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 #endif
 //----------------- //
 
-const int MOD = 1000000007;
+const int MOD = 1e9 + 7;
+const int INF = 1e9 + 1;
 
 vvi g;
-vi vis;
-void dfs(int node) {
-    vis[node] = 1;
-    for(auto v: g[node]) {
-        if(!vis[v]) {
-            dfs(v);
-        }
-    }
-}
-
-vvi g;
+vvi rev;
 vi vis;
 vi dist;
 
-void bfs(int start_node) {
-    vi nw, old;
-    old.push_back(start_node);
-    vis[start_node] = 1;
-    while(!old.empty()) {
-        for (auto v: old){
-            for(auto u : g[v]) {
-                if (!vis[v]){
-                    nw.push_back(v);
-                    vis[v] = true;
-                }
-            }
-        }
-        old = move(nw);
+vpii child(int front) {
+    vpii children;
+
+    for(auto v : g[front]) {
+        children.eb(v, 0);
     }
+
+    for(auto v : rev[front]) {
+        children.eb(v, 1);
+    }
+
+    return children;
 }
 
-
-void bfs(int start_node) {
-    queue<int> q;
-    q.push(start_node);
+void bfs01(int start_node) {
+    deque<int> dq;
+    dq.push_front(start_node);
     dist[start_node] = 0;
 
-    while(!q.empty()) {
-        int front = q.front();
-        q.pop();
+    while(!dq.empty()) {
+        int front = dq.front();
+        dq.pop_front();
+
         if(vis[front]) continue;
         vis[front] = 1;
-        for(auto v : g[front]) {
-            if(!vis[v]) {
-                q.push(v);
-                dist[v] = dist[front] + 1;
+
+        for(auto [v, cost]: child(front)) {
+            if(dist[v] > dist[front] + cost) {
+                dist[v] = dist[front] + cost;
+                if(cost == 0) dq.push_front(v);
+                else dq.push_back(v);
             }
         }
     }
+
 }
 
 void solve()
 {
     int n,m;
     cin>>n>>m;
-    g.assign(n+1, vi(m, 0));
-    vis.assign(n+1,0);
 
-    rep(i,1,n+1) {
-        rep(j,0,m) {
-            cin>>g[i][j];
-        }
+    g.resize(n+1);
+    rev.resize(n+1);
+    vis.assign(n+1,0);
+    dist.assign(n+1,INF);
+
+    rep(i,0,m) {
+        int u,v;
+        cin>>u>>v;
+        g[u].eb(v);
+        rev[v].eb(u);
     }
 
-    
+
+    bfs01(1);
+
+    if(dist[n] == INF) cout<<-1<<nline;
+    else cout<<dist[n]<<nline;
 }
 
 signed main()
@@ -121,6 +120,6 @@ signed main()
   cout.tie(0);
   int t = 1;
   cin >> t;
-  while (t--)
-    solve();
+  while (t--) solve();
 }
+
