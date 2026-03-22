@@ -22,7 +22,7 @@ using namespace std;
 #define ff first
 #define ss second
 
-// #define int long long
+#define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -45,64 +45,69 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 //----------------- //
 
 const int MOD = 1e9 + 7;
-const int INF = 1e9 + 1;
-int n,m;
-vvi g;
-vi indegree;
-vi outdegree;
-vi topo;
+const ll INF = 1e18;
 
-void kahn() {
-    priority_queue<int> pq;
-    rep(i,1,n+1) {
-        if(indegree[i] == 0) pq.push(i);
-    }
+vector<vector<pii>> g;
+vi dist;
+vi vis;
+
+void dijkstra(int st) {
+    priority_queue<pii> pq;
+    pq.push({0,st});
+    dist[st] = 0;
 
     while(!pq.empty()) {
-        int top = pq.top();
-        pr(top);
+        auto [_, top] = pq.top();
         pq.pop();
-        topo.eb(top);
+        if(vis[top]) continue;
+        vis[top] = 1;
 
-        for(auto v : g[top]) {
-            indegree[v]--;
-            if(indegree[v] == 0) {
-                pq.push(v);
+        for(auto [v, w] : g[top]) {
+            // pr(v,w);
+            // pr(dist[v], dist[top]);
+            if(dist[v] > dist[top] + w) {
+                dist[v] = dist[top] + w;
+                pq.push({-dist[v], v});
             }
         }
     }
 }
-// 2 3 1 4 5 
-// 2 4 3 1 5 
-
+vector<pair<pii,int>> edges;
 void solve()
 {
+    int n,m;
     cin>>n>>m;
-    
+
     g.resize(n+1);
-    indegree.resize(n+1);
-    outdegree.resize(n+1);
+    dist.assign(n+1, INF);
+    vis.assign(n+1, 0);
 
     rep(i,0,m) {
-        int u, v;
-        cin>>u>>v;
-        g[v].eb(u);
-        indegree[u]++;
+        int u,v,w;
+        cin>>u>>v>>w;
+        g[u].eb(v,w);
+        g[v].eb(u,w);
+        edges.push_back({{u,v}, w});
     }
+    int st;
+    cin>>st;
+    // pr(g);
 
-    kahn();
-    vi ans(n+1);
+    dijkstra(st);
 
-    reverse(all(topo));
+    ll maxx = LLONG_MIN;
+    
+    rep(i,0,m) {
+        int u = edges[i].ff.ff;
+        int v = edges[i].ff.ss;
+        int w = edges[i].ss;
 
-    rep(i,1,n+1) {
-        ans[topo[i-1]] = i;
+        int x = dist[u];
+        int y = dist[v];
+        int time = 10*min(x,y) + 10*abs(x-y) + 5*(w - abs(x-y));
+        maxx = max(maxx, time);
     }
-
-    rep(i,1,n+1) {
-        cout<<ans[i]<<" ";
-    }
-    cout<<nline;
+    cout<<maxx<<nline;
 }
 
 signed main()

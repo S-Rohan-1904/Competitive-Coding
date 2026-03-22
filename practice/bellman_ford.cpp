@@ -18,11 +18,12 @@ using namespace std;
 #define pii pair<int, int>
 #define pll pair<ll, ll>
 #define vpii vector<pii>
+#define vvpii vector<vector<pii>>
 #define mp make_pair
 #define ff first
 #define ss second
 
-// #define int long long
+#define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -45,64 +46,51 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 //----------------- //
 
 const int MOD = 1e9 + 7;
-const int INF = 1e9 + 1;
-int n,m;
-vvi g;
-vi indegree;
-vi outdegree;
-vi topo;
+const ll INF = 1e18;
 
-void kahn() {
-    priority_queue<int> pq;
-    rep(i,1,n+1) {
-        if(indegree[i] == 0) pq.push(i);
+vvpii g;
+vi dist;
+vi vis;
+
+void solve() {
+    int n,m;
+    cin>>n>>m;
+
+    g.resize(n+1);
+    dist.assign(n+1, INF);
+    vis.assign(n+1, 0);
+
+    rep(i,0,m) {
+        int u,v,w;
+        cin>>u>>v>>w;
+        g[u].eb(v,w);
     }
 
-    while(!pq.empty()) {
-        int top = pq.top();
-        pr(top);
-        pq.pop();
-        topo.eb(top);
+    dist[1] = 0;
 
-        for(auto v : g[top]) {
-            indegree[v]--;
-            if(indegree[v] == 0) {
-                pq.push(v);
+    rep(i,1, n) {
+        pr(i);
+        rep(u,1,n+1) {
+            vpii edges = g[u];
+            for(auto [v,w] : edges) {
+                pr(u,v,w);
+                dist[v] = min(dist[v], dist[u] + w);
+            }
+        }
+        pr(dist);
+    }
+
+    rep(u,1,n+1) {
+        vpii edges = g[u];
+        for(auto [v,w] : edges) {
+            if(dist[v] > dist[u] + w) {
+                cout<<-1<<nline;
+                return;
             }
         }
     }
-}
-// 2 3 1 4 5 
-// 2 4 3 1 5 
-
-void solve()
-{
-    cin>>n>>m;
-    
-    g.resize(n+1);
-    indegree.resize(n+1);
-    outdegree.resize(n+1);
-
-    rep(i,0,m) {
-        int u, v;
-        cin>>u>>v;
-        g[v].eb(u);
-        indegree[u]++;
-    }
-
-    kahn();
-    vi ans(n+1);
-
-    reverse(all(topo));
-
-    rep(i,1,n+1) {
-        ans[topo[i-1]] = i;
-    }
-
-    rep(i,1,n+1) {
-        cout<<ans[i]<<" ";
-    }
-    cout<<nline;
+    pr(dist);
+    cout<< dist[n]<<nline;
 }
 
 signed main()

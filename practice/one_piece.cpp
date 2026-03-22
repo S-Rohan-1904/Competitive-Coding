@@ -54,7 +54,13 @@ vvi vis;
 
 int dx[] = {0,0,1,-1};
 int dy[] = {1,-1,0,0};
-int color[] = {3, 4, 1, 2};
+int color[] = {1, 2, 3, 4};
+/*
+1->R
+2->L
+3->D
+4->U
+*/
 using state = pii;
 void bfs01(state st) {
     deque<state> dq;
@@ -74,7 +80,7 @@ void bfs01(state st) {
             int ny = front.ss + dy[i];
             if(nx>=0 && nx<n && ny>=0 && ny<m) {
                 int cost = 1;
-                if(color[i] == g[nx][ny]) cost = 0;
+                if(color[i] == g[front.ff][front.ss]) cost = 0;
                 if(dist[nx][ny] > dist[front.ff][front.ss] + cost) {
                     dist[nx][ny] = dist[front.ff][front.ss] + cost;
                     if(cost == 0) dq.push_front({nx,ny});
@@ -102,12 +108,12 @@ void solve()
 
     bfs01({0,0});
 
-    rep(i,0,n) {
-        rep(j,0,m) {
-            cout<< dist[i][j]<<" ";
-        }
-        cout<<nline;
-    }
+    // rep(i,0,n) {
+    //     rep(j,0,m) {
+    //         cout<< dist[i][j]<<" ";
+    //     }
+    //     cout<<nline;
+    // }
 
     cout << dist[n-1][m-1]<<nline;
 }

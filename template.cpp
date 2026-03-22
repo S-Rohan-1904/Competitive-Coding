@@ -18,6 +18,7 @@ using namespace std;
 #define pii pair<int, int>
 #define pll pair<ll, ll>
 #define vpii vector<pii>
+#define vvpii vector<vector<pii>>
 #define mp make_pair
 #define ff first
 #define ss second

@@ -18,6 +18,7 @@ using namespace std;
 #define pii pair<int, int>
 #define pll pair<ll, ll>
 #define vpii vector<pii>
+#define vvpii vector<vector<pii>>
 #define mp make_pair
 #define ff first
 #define ss second
@@ -46,63 +47,55 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
-int n,m;
-vvi g;
-vi indegree;
-vi outdegree;
-vi topo;
-
-void kahn() {
-    priority_queue<int> pq;
-    rep(i,1,n+1) {
-        if(indegree[i] == 0) pq.push(i);
-    }
-
-    while(!pq.empty()) {
-        int top = pq.top();
-        pr(top);
-        pq.pop();
-        topo.eb(top);
-
-        for(auto v : g[top]) {
-            indegree[v]--;
-            if(indegree[v] == 0) {
-                pq.push(v);
-            }
-        }
-    }
-}
-// 2 3 1 4 5 
-// 2 4 3 1 5 
 
 void solve()
 {
-    cin>>n>>m;
-    
-    g.resize(n+1);
-    indegree.resize(n+1);
-    outdegree.resize(n+1);
+    int n,m;
+    cin>>n;
+    vector<string> words(n);
+    rep(i,0,n) {
+        cin>>words[i];
+    }
+    cin>>m;
+    vector<string> phrases(m);
+    string str;
+    getline(cin, str);
+    rep(i,0,m) {
+        getline(cin, str);
+        phrases[i] = str;
+    }
+
+    map<string, int> mp;
+
+    rep(i,0,n) {
+        string sorted = words[i];
+        sort(all(sorted));
+        mp[sorted]++;
+    }
 
     rep(i,0,m) {
-        int u, v;
-        cin>>u>>v;
-        g[v].eb(u);
-        indegree[u]++;
+        string line = phrases[i];
+        string word = "";
+        int ans = 1;
+        for(char ch : line) {
+            if(ch != ' ') word.push_back(ch);
+            else {
+                sort(all(word));
+                // cout<<word<<" "<<mp[word]<<nline;
+                // cout<<word.size()<<nline;
+                ans *= mp[word];
+                word = "";
+            }
+        }
+        // cout<<word.size()<<nline;
+        if(word.size() !=0) {
+            sort(all(word));
+
+            ans *= mp[word];
+        }
+        cout<<ans<<nline;
+        // cout<<word<<" "<< mp[word]<<nline;
     }
-
-    kahn();
-    vi ans(n+1);
-
-    reverse(all(topo));
-
-    rep(i,1,n+1) {
-        ans[topo[i-1]] = i;
-    }
-
-    rep(i,1,n+1) {
-        cout<<ans[i]<<" ";
-    }
-    cout<<nline;
 }
 
 signed main()
