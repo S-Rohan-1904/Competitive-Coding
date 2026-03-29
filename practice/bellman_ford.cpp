@@ -57,7 +57,7 @@ void solve() {
     cin>>n>>m;
 
     g.resize(n+1);
-    dist.assign(n+1, INF);
+    dist.assign(n+1, -INF);
     vis.assign(n+1, 0);
 
     rep(i,0,m) {
@@ -72,9 +72,10 @@ void solve() {
         pr(i);
         rep(u,1,n+1) {
             vpii edges = g[u];
+            if(dist[u] == -INF) continue;
             for(auto [v,w] : edges) {
-                pr(u,v,w);
-                dist[v] = min(dist[v], dist[u] + w);
+                    dist[v] = max(dist[v], dist[u] + w);
+                    pr(u,v,dist[v]);
             }
         }
         pr(dist);
@@ -83,7 +84,7 @@ void solve() {
     rep(u,1,n+1) {
         vpii edges = g[u];
         for(auto [v,w] : edges) {
-            if(dist[v] > dist[u] + w) {
+            if(dist[v] < dist[u] + w && dist[u] != -INF) {
                 cout<<-1<<nline;
                 return;
             }
