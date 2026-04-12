@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
-#pragma GCC optimize("O2")
+
 #define rep(i, l, r) for (int i = l; i < r; i++)
 #define rrep(i, r, l) for (int i = r-1; i >=0; i--)
 #define ll long long
@@ -23,7 +23,7 @@ using namespace std;
 #define ff first
 #define ss second
 
-#define int long long
+// #define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -47,62 +47,47 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
-using state = pii;
-
-int n,m;
-vector<vector<char>> g;
-vvi vis;
-vvi dist;
-
-int dx[] = {0,0,1,-1};
-int dy[] = {1,-1,0,0};
-char dir[] = {'R', 'L', 'D', 'U'};
-
-void bfs01(state st) {
-    deque<state> dq;
-    dist[st.ff][st.ss] = 0;
-    dq.push_front(st);
-
-    while (!dq.empty()) {
-        state front = dq.front();
-        dq.pop_front();
-
-        if(vis[front.ff][front.ss]) continue;
-        vis[front.ff][front.ss] = 1;
-
-        rep(i,0,4) {
-            int nx = front.ff + dx[i];
-            int ny = front.ss + dy[i];
-            if(nx < n && nx >= 0 && ny < m && ny >= 0 && !vis[nx][ny]) {
-                int w = dir[i] == dir[g[front.ff][front.ss]] ? 0 : 1;
-                dist[nx][ny] = dist[front.ff][front.ss] + w;
-                if(w==0) dq.push_front({nx,ny});
-                else dq.push_back({nx,ny});
-            }
-        }
+int n;
+vi final;
+vi choices = {1,-1};
+vi l;
+ll ans = 0;
+void rec(int level) {
+  if(level == n) {
+    ll cnt = 0;
+    long double sum = 0.5;
+    for(auto & el : final) {
+      long double prev = sum;
+      sum+=el;
+      // pr(prev, sum);
+      if((prev<0 && sum>0) || (prev > 0 && sum < 0)) {
+        cnt++;
+      }
     }
-    
+    // pr(cnt);
+    // pr(nline);
+    ans = max(ans, cnt);
+    return;
+  }
 
+  final.eb(l[level]);
+  rec(level + 1);
+  final.pop_back();
+
+  final.eb(-l[level]);
+  rec(level + 1);
+  final.pop_back();
 }
 
-void solve() {
-    cin>>n>>m;
-    g.resize(n, vector<char>(m));
-    vis.assign(n, vi(m, 0));
-    dist.assign(n, vi(m, INF));
-    state st,end;
-    rep(i,0,n) {
-        rep(j,0,m) {
-            cin>>g[i][j];
-            if(g[i][j] == 'S') st = {i,j};
-            if(g[i][j] == 'E') end = {i,j};
-        }
-    }
+void solve()
+{
+  cin>>n;
+  l.resize(n);
+  inparr(l);
 
-    bfs01(st);
+  rec(0);
 
-    cout<<dist[end.ff][end.ss]<<nline;
-
+  cout<<ans<<nline;
 }
 
 signed main()
