@@ -18,9 +18,11 @@ using namespace std;
 #define pii pair<int, int>
 #define pll pair<ll, ll>
 #define vpii vector<pii>
+#define vvpii vector<vector<pii>>
 #define mp make_pair
 #define ff first
 #define ss second
+#define float long double
 
 // #define int long long
 
@@ -44,69 +46,63 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 #endif
 //----------------- //
 
-const int MOD = 1000000007;
+const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
+using state = pii;
 int n,m;
 vvi g;
-vi color;
-vi parent;
-bool is_cycle = false;
-vi cycle;
-void dfs(int node, int par) {
-    color[node] = 2;
-    parent[node] = par;
+vvi vis;
+vvi color;
 
-    for(auto child : g[node]) {
-        if (child == par) continue; 
+int dx[] = {0,0,1,-1};
+int dy[] = {1,-1,0,0};
 
-        if(color[child] == 1) {
-            dfs(child, node);
-            if (is_cycle) return; 
-        } else if(color[child] == 2) {
-            is_cycle = 1;
-            cycle.eb(child); 
-            int temp = node;
-            while(temp != child) {
-                cycle.eb(temp);
-                temp = parent[temp];
-            }
-            cycle.eb(child); 
-            reverse(all(cycle));
-            cout << cycle.size() << nline;
-            for(auto &el : cycle) {
-                cout << el << " ";
-            }
-            cout << nline;
-            exit(0);
-        }
+void dfs(state st, int cc) {
+  vis[st.ff][st.ss] = 1;
+  color[st.ff][st.ss] = cc;
+
+  rep(i,0,4) {
+    int nx = st.ff + dx[i];
+    int ny = st.ss + dy[i];
+    if(nx>=0 && nx<n && ny>=0 && ny<m && g[nx][ny] && !vis[nx][ny]) {
+      dfs({nx,ny}, cc);
     }
-    color[node] = 3;
+  }
+  
 }
 
-void solve() {
-    cin>>n>>m;
-    g.resize(n+1);
-    color.assign(n+1, 1);
-    parent.assign(n+1, 0);
-    rep(i,0,m) {
-        int u, v;
-        cin>>u>>v;
-        g[u].eb(v);
-        g[v].eb(u);
+void solve()
+{
+  cin>>n>>m;
+  g.resize(n, vi(m));
+  vis.assign(n, vi(m,0));
+  color.resize(n, vi(m));
+  rep(i,0,n) {
+    string temp;
+    cin>>temp;
+    rep(j,0,m) {
+      if(temp[j] == '.') g[i][j] = 1;
+      else g[i][j] = 0;
     }
+  }
 
-    rep(i,1,n+1) {
-        dfs(i, -1);
-        if(is_cycle) break;
-        color.clear();
-        parent.clear();
-        cycle.clear();
+  int cc = 0;
+  rep(i,0,n) {
+    rep(j,0,m) {
+      if(g[i][j] && !vis[i][j]) {
+        dfs({i,j}, cc);
+        cc++;
+      }
     }
-
-    if(!is_cycle) cout<<"IMPOSSIBLE"<<nline;
-
-
+  }
+  // rep(i,0,n) {
+  //   rep(j,0,m) {
+  //     cout<<color[i][j] << " ";
+  //   } 
+  //   cout<<nline;
+  // }
+  cout<<cc<<nline;
 }
 
 signed main()
@@ -115,7 +111,7 @@ signed main()
   cin.tie(0);
   cout.tie(0);
   int t = 1;
-//   cin >> t;
+  // cin >> t;
   while (t--)
     solve();
 }

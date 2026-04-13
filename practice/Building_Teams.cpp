@@ -18,9 +18,11 @@ using namespace std;
 #define pii pair<int, int>
 #define pll pair<ll, ll>
 #define vpii vector<pii>
+#define vvpii vector<vector<pii>>
 #define mp make_pair
 #define ff first
 #define ss second
+#define float long double
 
 // #define int long long
 
@@ -44,69 +46,47 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 #endif
 //----------------- //
 
-const int MOD = 1000000007;
+const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
-
 int n,m;
 vvi g;
+vi vis;
 vi color;
-vi parent;
-bool is_cycle = false;
-vi cycle;
-void dfs(int node, int par) {
-    color[node] = 2;
-    parent[node] = par;
-
-    for(auto child : g[node]) {
-        if (child == par) continue; 
-
-        if(color[child] == 1) {
-            dfs(child, node);
-            if (is_cycle) return; 
-        } else if(color[child] == 2) {
-            is_cycle = 1;
-            cycle.eb(child); 
-            int temp = node;
-            while(temp != child) {
-                cycle.eb(temp);
-                temp = parent[temp];
-            }
-            cycle.eb(child); 
-            reverse(all(cycle));
-            cout << cycle.size() << nline;
-            for(auto &el : cycle) {
-                cout << el << " ";
-            }
-            cout << nline;
-            exit(0);
-        }
+void dfs(int node, int cc) {
+  color[node] = cc;
+  vis[node] = 1;
+  for(auto child : g[node]) {
+    if(color[child] == cc) {
+      cout<<"IMPOSSIBLE"<<nline;
+      exit(0);
     }
-    color[node] = 3;
+    if(!vis[child]) {
+      dfs(child, 3-cc);
+    }
+  }
 }
-
-void solve() {
-    cin>>n>>m;
-    g.resize(n+1);
-    color.assign(n+1, 1);
-    parent.assign(n+1, 0);
-    rep(i,0,m) {
-        int u, v;
-        cin>>u>>v;
-        g[u].eb(v);
-        g[v].eb(u);
+void solve()
+{
+  cin>>n>>m;
+  g.resize(n+1);
+  vis.assign(n+1, 0);
+  color.resize(n+1);
+  rep(i,0,m) {
+    int u,v;
+    cin>>u>>v;
+    g[u].eb(v);
+    g[v].eb(u);
+  }
+  int cc = 2;
+  rep(i,1,n+1) {
+    if(!vis[i]) {
+      dfs(i, 3-cc);
     }
+  }
 
-    rep(i,1,n+1) {
-        dfs(i, -1);
-        if(is_cycle) break;
-        color.clear();
-        parent.clear();
-        cycle.clear();
-    }
-
-    if(!is_cycle) cout<<"IMPOSSIBLE"<<nline;
-
-
+  rep(i,1,n+1) {
+    cout<<color[i]<<" ";
+  }
 }
 
 signed main()
@@ -115,7 +95,7 @@ signed main()
   cin.tie(0);
   cout.tie(0);
   int t = 1;
-//   cin >> t;
+  // cin >> t;
   while (t--)
     solve();
 }

@@ -22,6 +22,7 @@ using namespace std;
 #define mp make_pair
 #define ff first
 #define ss second
+#define float long double
 
 // #define int long long
 
@@ -58,7 +59,7 @@ signed main()
   cin.tie(0);
   cout.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   while (t--)
     solve();
 }
