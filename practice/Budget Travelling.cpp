@@ -24,7 +24,7 @@ using namespace std;
 #define ss second
 #define float long double
 
-// #define int long long
+#define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -47,11 +47,67 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 //----------------- //
 
 const int MOD = 1e9 + 7;
-const int INF = 1e9 + 1;
+const int INF = 1e18;
+using state = pii;
 
+int n,m;
+int st_node, en_node, init_capcity;
+vector<vector<state>> g;
+vvi dist;
+vvi vis;
+vi c;
+
+void dijkstra(pii st) {
+
+    priority_queue<pair<int, pii>> pq;
+    pq.push(mp(-0, st));
+    dist[st.ff][st.ss] = 0;
+
+    while(!pq.empty()) {
+        auto top = pq.top();
+        int top_node = top.ss.ff;
+        int top_fuel = top.ss.ss;
+        pq.pop();
+
+        if(vis[top_node][top_fuel]) continue;
+        vis[top_node][top_fuel] = 1;
+
+        for(auto [v, p] : g[top_node]) {
+            if(top_fuel >= p && dist[v][top_fuel - p] > dist[top_node][top_fuel] + 0) {
+                dist[v][top_fuel - p] = dist[top_node][top_fuel] + 0;
+                pq.push(mp(-dist[v][top_fuel - p], mp(v, top_fuel - p)));
+            }
+        } 
+
+        if(top_fuel < init_capcity && !vis[top_node][top_fuel+1] && dist[top_node][top_fuel+1] > dist[top_node][top_fuel] + c[top_node]) {
+            dist[top_node][top_fuel+1] = dist[top_node][top_fuel] + c[top_node];
+            pq.push(mp(-dist[top_node][top_fuel+1], mp(top_node, top_fuel + 1)));
+        }
+    }
+
+}
 void solve()
 {
-  
+    cin>>n>>m;
+    g.resize(n+1);
+    c.resize(n+1);
+    
+    rep(i,0,m) {
+        int u, v, w;
+        cin>>u>>v>>w;
+        g[u].eb(v,w);
+        g[v].eb(u,w);
+    }
+    rep(i,1,n+1) {
+        cin>>c[i];
+    }
+    cin>>st_node>>en_node>>init_capcity;
+    dist.assign(n+1, vector<int>(init_capcity + 1, INF));
+    vis.assign(n+1, vector<int>(init_capcity + 1, 0));
+
+    dijkstra({st_node, 0});
+
+    cout<<dist[en_node][0]<<nline;
 }
 
 signed main()

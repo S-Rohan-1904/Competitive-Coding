@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-
 #define rep(i, l, r) for (int i = l; i < r; i++)
 #define rrep(i, r, l) for (int i = r-1; i >=0; i--)
 #define ll long long
@@ -22,9 +21,8 @@ using namespace std;
 #define mp make_pair
 #define ff first
 #define ss second
-#define float long double
 
-// #define int long long
+#define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -47,11 +45,64 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 //----------------- //
 
 const int MOD = 1e9 + 7;
-const int INF = 1e9 + 1;
+const int INF = 900;
 
-void solve()
-{
-  
+vvi g;
+
+void solve() {
+  int n;
+  cin>>n;
+  g.resize(n, vi(n));
+
+  rep(i,0,n) {
+    rep(j,0,n) {
+      cin>>g[i][j];
+    }
+  }
+
+  vi order(n);
+  vi added(n);
+
+  rep(i,0,n) {
+    int el;
+    cin>>el;
+    el--;
+    order[i] = el;
+  }
+
+  reverse(all(order));
+
+  vvi temp = g;
+
+  vi sums;
+
+  rep(k,0,n) {
+    added[order[k]] = 1;
+    rep(i,0,n) {
+      rep(j,0,n) {
+          temp[i][j] = min(temp[i][j], temp[i][order[k]] + temp[order[k]][j]);
+        }
+    }
+    pr("Final");
+    pr(temp);
+
+    ll sum = 0;
+
+    rep(i,0,n) {
+        if(!added[i]) continue;
+        rep(j,0,n) {
+            if(!added[j]) continue;
+            sum += temp[i][j];
+        }
+    }
+    sums.eb(sum);
+  }
+
+  reverse(all(sums));
+
+  rep(i,0,n) cout<<sums[i]<<" ";
+  cout<<nline;
+
 }
 
 signed main()
