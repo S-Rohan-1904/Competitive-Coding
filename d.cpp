@@ -49,9 +49,54 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
-void solve() {
-  
+int minOperations(vector<int>& nums, int k) {
+    int n = nums.size();
+
+    int minn = INT_MAX;
+    for(int x = 0; x < k; x++) {
+        for(int y = 0; y < k; y++) {
+            if(x==y)continue;
+            int cnt = 0;
+            for(int i = 0 ; i < n ; i++) {
+                int curr = nums[i] % k;
+                if(i%2 == 0) {
+                    int moves = 0;
+                    if(x > curr) {
+                        moves = min(abs(curr - x), k-x+curr);
+                    } else {
+                        moves = min(abs(curr - x), k-curr+x);
+                    }
+                    cnt+=moves;
+                } else {
+                    int moves = 0;
+                    if(y > curr) {
+                        moves = min(abs(curr - y), k-y+curr);
+                    } else {
+                        moves = min(abs(curr - y), k-curr+y);
+                    }
+                    cnt+=moves;
+                }
+            }
+            minn = min(minn, cnt);
+        }
+    }
+
+    return minn;
 }
+
+void solve() {
+    int n,k;
+    cin>>n>>k;
+    vi nums(n);
+    inparr(nums);
+
+    cout<< minOperations(nums, k);
+    
+}
+
+
+   
+
 
 signed main() {
   ios_base::sync_with_stdio(0);

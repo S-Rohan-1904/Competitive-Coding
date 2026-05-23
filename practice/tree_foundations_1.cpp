@@ -49,8 +49,84 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
+vvi g;
+vi sub_sz;
+vi dist;
+vi par;
+void dfs(int nn, int pp, int dd) {
+    sub_sz[nn] = 1;
+    dist[nn] = dd;
+    par[nn] = pp;
+
+    for(auto v : g[nn]) {
+        if(v != pp) {
+            dfs(v, nn, dd + 1);
+            sub_sz[nn]+=sub_sz[v];
+        }
+    }
+}
+
 void solve() {
-  
+    int n;
+    cin>>n;
+    int m = n-1;
+    g.resize(n+1);
+    sub_sz.resize(n+1);
+    dist.resize(n+1);
+    par.resize(n+1);
+
+    rep(i,0,m) {
+        int a,b;
+        cin>>a>>b;
+        g[a].eb(b);
+        g[b].eb(a);
+    }
+
+    dfs(1,0,0);
+
+    // rep(i,1,n+1) {
+    //     pr(i, sub_sz[i]);
+    // }
+    ll ans = 0;
+    rep(i, 1, n+1) {
+        ans += 1LL * sub_sz[i] * (n - sub_sz[i]);
+    }
+    cout << 2 * ans << nline;
+
+    dfs(1,0,0);
+
+    int x = -1;
+    int d = -1;
+    rep(i,1,n+1) {
+        if(d < dist[i]) {
+            x = i;
+            d = dist[i];
+        }
+    }
+
+    dfs(x,0,0);
+
+    int y = -1;
+    d = -1;
+    rep(i,1,n+1) {
+        if(d < dist[i]) {
+            y = i;
+            d = dist[i];
+        }
+    }
+
+    cout<< "Diameter: " << x << " " << y <<" " << d << nline;
+
+    int steps = d/2;
+    int curr = y;
+    while(steps--) {
+        curr = par[curr];
+    }
+
+    if(d%2 != 0) {
+        cout<<"Centers: " << curr << " " << par[curr] << nline;
+    } else cout<<"Center: " << curr << nline;
+    
 }
 
 signed main() {
