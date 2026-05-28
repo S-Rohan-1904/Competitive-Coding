@@ -85,6 +85,11 @@ void solve() {
     par.resize(n+1);
     g.resize(n+1);
     int m = n-1;
+
+    if(n==1) {
+        cout<<1<<nline;
+        return;
+    }
     rep(i,0,m) {
         int a,b;
         cin>>a>>b;
