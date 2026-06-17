@@ -49,35 +49,8 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
-int dp[100001];
-
 void solve() {
-    string s;
-    cin>>s;
-    int n = s.size();
-    memset(dp, -1, sizeof(dp));
-    //dp(i) -> number of distinct subseq ending at i
-
-    // considering the string as 1 based indexing 
-    // hence this base case is for empty string
-    dp[0] = 1;
-    vector<int> last_occ(26, -1);
-    for(int i = 1; i <= n; i++) {
-        int ch = s[i-1] - 'A';
-        // total number of subsequences generated at i = (i-1) + take/not take
-        dp[i] = (2 * dp[i-1]) % MOD;
-
-        if(last_occ[ch] != -1) {
-            // the number of subseq generated from the last occ is dp[lastocc - 1] but we are storing last occ itself as last occ - 1
-            dp[i] = (dp[i] - dp[last_occ[ch]] + MOD) % MOD;
-        }
-        //store the last occ
-        last_occ[ch] = i-1;
-
-    }
     
-    // number of distinct subseq ending at n
-    cout << dp[n] << nline;
 }
 
 signed main() {
@@ -85,7 +58,7 @@ signed main() {
     cin.tie(0);
     cout.tie(0);
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     solve();
 }

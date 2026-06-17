@@ -48,44 +48,61 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
+// dp(i,j,k) -> returns number of paths from (i,j) to (n-1, m-1)
 
-int dp[100001];
+int n, m, k;
+
+vvi g;
+int dp[201][201][401];
+int rec(int i, int j, int k) {
+    if(k < 0) return 0;
+    if( i >= n || j >= m) return 0;
+    if(i == n-1 && j == m-1) return 1;
+    if(dp[i][j][k] != -1) return dp[i][j][k];
+
+    int ans = 0;
+    
+    if(i + 1 < n && g[i + 1][j] == 0) ans = (ans + rec(i+1, j, k)) % MOD;
+    else ans = (ans + rec(i+1, j, k-1)) % MOD;
+
+    if(j + 1 < m && g[i][j + 1] == 0) ans = (ans + rec(i, j + 1, k)) % MOD;
+    else ans = (ans + rec(i, j + 1, k-1)) % MOD;
+
+    return dp[i][j][k] = ans;
+}
 
 void solve() {
-    string s;
-    cin>>s;
-    int n = s.size();
-    memset(dp, -1, sizeof(dp));
-    //dp(i) -> number of distinct subseq ending at i
+    cin>>n>>m>>k;
+    g.assign(n, vi(m, 0));
 
-    // considering the string as 1 based indexing 
-    // hence this base case is for empty string
-    dp[0] = 1;
-    vector<int> last_occ(26, -1);
-    for(int i = 1; i <= n; i++) {
-        int ch = s[i-1] - 'A';
-        // total number of subsequences generated at i = (i-1) + take/not take
-        dp[i] = (2 * dp[i-1]) % MOD;
-
-        if(last_occ[ch] != -1) {
-            // the number of subseq generated from the last occ is dp[lastocc - 1] but we are storing last occ itself as last occ - 1
-            dp[i] = (dp[i] - dp[last_occ[ch]] + MOD) % MOD;
+    rep(i,0,n) {
+        rep(j,0,m) {
+            cin >> g[i][j]; 
         }
-        //store the last occ
-        last_occ[ch] = i-1;
-
     }
-    
-    // number of distinct subseq ending at n
-    cout << dp[n] << nline;
+    rep(i,0,n) {
+        rep(j,0,m) {
+            rep(t, 0, k+1) {
+                dp[i][j][t] = -1;
+            }
+        }
+    }
+    int starting_k = k;
+    if (g[0][0] == 1) {
+        starting_k--;
+    }
+
+    int ans = rec(0, 0, starting_k);
+    cout << ans << nline;
+
 }
 
 signed main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
-    int t = 1;
-    cin >> t;
-    while (t--)
+  ios_base::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+  int t = 1;
+  cin >> t;
+  while (t--)
     solve();
 }
