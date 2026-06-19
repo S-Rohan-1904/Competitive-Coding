@@ -24,7 +24,7 @@ using namespace std;
 #define ss second
 #define float long double
 
-#define int long long
+// #define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -48,86 +48,62 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
+// 1 2 3 4
+// 4 3 2 1
+// <= curr
 
-vi arr;
-vi pre;
-int n,m,k;
+// 1 4 3 2 -> 3
+// 1 3 2 4 -> 2
+// 1 2 3 4 -> 1
 
-// m = 2
+// 1 2 2
+// 1 3 5
 
-// 1 3 6 10 15
-// 1 2 3 4  5
+// 2 2 1
+// 1 2 3
 
-// int rec(int l, int r, int k) {
-//     pr(l, r, k);
-//     if(k < 0) return -1e9;
-//     if(l > r) return -1e9;
-//     if(k == 0) return 0;
-//     if(l == r) return arr[l-1];
-//     int ans = -1e9;
-//     for(int mid = l; r - mid + 1 >= m; mid++) {
-//         pr(mid);
-//         ans = max(ans, pre[mid+m-1] - pre[mid-1] + rec(l, mid, k-1) +rec(mid + m, r, k-1));
-//     } 
-//     pr(ans);
-//     return ans;
-// }
-
-// 1 2 3 4 5 6
-
-// 1 based indexing
-// dp(i,k) -> ending at i with k subarrays
-int dp[5001][5001];
-// int rec(int i, int k) {
-//     if(k < 0) return -1e9;
-//     if(i < m) return -1e9;
-//     if(k == 0) return 0;
-//     if(dp[i][k] != -1) return dp[i][k];
-//     int ans = -1e9;
-//     pr(i, m, k);
-//     for(int j = i-m; j >= 0; j--) {
-//         pr(j, k-1);
-//         ans = max(ans, pre[i] - pre[i-m] + rec(j, k-1));
-//     }
-//     pr(ans);
-
-//     return dp[i][k] = ans;
-// }
-
-int rec(int i, int k) {
-    if( k < 0 ) return -1e9;
-    if (k == 0) return 0;
-    if (i + m - 1 > n) return -1e18;
-    if (i > n) return -1e18;
-
-    if(dp[i][k] != -1) return dp[i][k];
-    long long ans = rec(i + 1, k);
-
-    ans = max(ans, pre[i + m - 1] - pre[i - 1] + rec(i + m, k - 1));
-
-    return dp[i][k] = ans;
-}
-
+// 5 1
+// 2 4
 
 void solve() {
-    cin>>n>>m>>k;
-    arr.resize(n);
-    inparr(arr);
-
-    memset(dp, -1, sizeof(dp));
-
-    pre.assign(n+1, 0);
-
+    int n;
+    cin>>n;
+    vi a(n), b(n);
+    inparr(a);
+    inparr(b);
+    // 1 2 2
+    // 1 2 1
+    // I need to pair each element in b to an element in a such that a <= b and a is closer to b
+    vi ans(n, -1);
+    vi vis(n, 0);
+    pr(a);
+    pr(b);
     rep(i,0,n) {
-        pre[i+1] = pre[i] + arr[i];
+        rep(j, 0, n) {
+            if(vis[j]) continue;
+            if(a[i] <= b[j]) {
+                pr(i,j);
+                ans[i] = j;
+                vis[j] = 1;
+                break;
+            }
+        }
+        if(ans[i] == -1) {
+            cout<<-1<<nline;
+            return;
+        }
     }
-    pr(pre);
-    pr(arr);
 
-    // cout << rec(1, n, k) << nline;
-
-    cout << rec(1, k) << nline;
-
+    int swaps = 0;
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (ans[j] > ans[j + 1]) {
+                swap(ans[j], ans[j + 1]);
+                swaps++;
+            }
+        }
+    }
+    cout << swaps << nline;
 }
 
 signed main() {
@@ -135,7 +111,7 @@ signed main() {
     cin.tie(0);
     cout.tie(0);
     int t = 1;
-    // cin >> t;
+    cin >> t;
     while (t--)
     solve();
 }

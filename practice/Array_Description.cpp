@@ -50,29 +50,38 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 int n, m;
 vi arr;
-int dp[100100][3];
+int dp[100100][101];
 int rec(int i, int prev) {
-    if(i == n) return;
+    if(prev > m || prev < 1) return 0;
+    if(i == n) return 1;
+    // pr(i, prev);
 
+    if(dp[i][prev] != -1) return dp[i][prev];
     int ans = 0;
-    if(arr[i] == 0) {
-        rep(j,0,3) {
-            if(abs(arr[i] - (j-1)) <= 1) {
-                ans += rec(i+1, j);
-            }
-        }
-    } else {
-        ans += rec(i+1, 0);
+    // pr(i, arr[0]);
+    if(i == 0 && arr[0] == 0) {
+        rep(j,1,m+1) ans= (ans % MOD + rec(i+1, j)%MOD)%MOD;
+    } else if(arr[i] == 0) {
+        ans = (ans % MOD + rec(i+1, prev - 1)%MOD + rec(i+1, prev)%MOD)%MOD;
+        ans = (ans % MOD + rec(i+1, prev + 1)%MOD) % MOD;
     }
+    else {
+        if(abs(arr[i] - prev) <= 1) ans= (ans % MOD + rec(i+1, arr[i])%MOD)%MOD;
+        else ans = 0;
+    }
+    // pr(i, prev, ans);
 
-    return ans;
+    return dp[i][prev] = ans;
 }
 
 void solve() {
     cin>>n>>m;
     arr.resize(n);
     inparr(arr);
-
+    // pr(arr);
+    memset(dp, -1, sizeof(dp));
+    int ans = rec(0,max(1,arr[0]));
+    cout << ans%MOD << nline;
 }
 
 signed main() {

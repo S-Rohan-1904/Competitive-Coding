@@ -24,7 +24,7 @@ using namespace std;
 #define ss second
 #define float long double
 
-#define int long long
+// #define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -49,84 +49,56 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
-vi arr;
-vi pre;
-int n,m,k;
+string s, t;
+int n,m;
+int dp[1001][1001];
+int rec(int i, int j) {
+    if(i > n || j > m) return 1e9;
+    if(i == n && j == m) return 0;
+    if(dp[i][j] != -1) return dp[i][j];
 
-// m = 2
+    int ans = min({1+rec(i+1,j), 1 + rec(i,j+1), 1 + rec(i+1, j+1)});
 
-// 1 3 6 10 15
-// 1 2 3 4  5
+    if(s[i] == t[j]) ans = min(ans, rec(i+1, j+1));
 
-// int rec(int l, int r, int k) {
-//     pr(l, r, k);
-//     if(k < 0) return -1e9;
-//     if(l > r) return -1e9;
-//     if(k == 0) return 0;
-//     if(l == r) return arr[l-1];
-//     int ans = -1e9;
-//     for(int mid = l; r - mid + 1 >= m; mid++) {
-//         pr(mid);
-//         ans = max(ans, pre[mid+m-1] - pre[mid-1] + rec(l, mid, k-1) +rec(mid + m, r, k-1));
-//     } 
-//     pr(ans);
-//     return ans;
-// }
-
-// 1 2 3 4 5 6
-
-// 1 based indexing
-// dp(i,k) -> ending at i with k subarrays
-int dp[5001][5001];
-// int rec(int i, int k) {
-//     if(k < 0) return -1e9;
-//     if(i < m) return -1e9;
-//     if(k == 0) return 0;
-//     if(dp[i][k] != -1) return dp[i][k];
-//     int ans = -1e9;
-//     pr(i, m, k);
-//     for(int j = i-m; j >= 0; j--) {
-//         pr(j, k-1);
-//         ans = max(ans, pre[i] - pre[i-m] + rec(j, k-1));
-//     }
-//     pr(ans);
-
-//     return dp[i][k] = ans;
-// }
-
-int rec(int i, int k) {
-    if( k < 0 ) return -1e9;
-    if (k == 0) return 0;
-    if (i + m - 1 > n) return -1e18;
-    if (i > n) return -1e18;
-
-    if(dp[i][k] != -1) return dp[i][k];
-    long long ans = rec(i + 1, k);
-
-    ans = max(ans, pre[i + m - 1] - pre[i - 1] + rec(i + m, k - 1));
-
-    return dp[i][k] = ans;
+    return dp[i][j] = ans;
 }
 
+// delete -> rec(i+1, j)
+// insert -> rec(i, j+1)
+// replace -> rec(i+1, j+1)
+
+void generate(int i, int j) {
+    int ans = rec(i,j);
+    if(s[i] == t[j] && ans == rec(i+1, j+1)) generate(i+1, j+1);
+    else {
+        if(ans == 1 + rec(i+1,j)) {
+            cout << "DELETE " << j + 1<< nline;
+            generate(i+1, j);
+        } else if(ans == 1 + rec(i,j + 1)) {
+            cout << "INSERT " << j + 1<< " " << t[j] <<nline;
+            generate(i, j+1);
+        } else if(ans == 1 + rec(i+1,j + 1)) {
+            cout << "REPLACE " << j + 1<< " " << t[j] << nline;
+            generate(i+1, j+1);
+        }
+    }
+}
+// A C C E P T E D
+// 1 2 3 4 5 6 7 8 9 
+// W R O N G A N S W E R
+// W R O N G A N S W E R
 
 void solve() {
-    cin>>n>>m>>k;
-    arr.resize(n);
-    inparr(arr);
+    cin>>s>>t;
+    n = s.size();
+    m = t.size();
 
     memset(dp, -1, sizeof(dp));
 
-    pre.assign(n+1, 0);
+    cout << rec(0,0) << nline; 
 
-    rep(i,0,n) {
-        pre[i+1] = pre[i] + arr[i];
-    }
-    pr(pre);
-    pr(arr);
-
-    // cout << rec(1, n, k) << nline;
-
-    cout << rec(1, k) << nline;
+    generate(0, 0);
 
 }
 
