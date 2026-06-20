@@ -55,19 +55,20 @@ vector<vector<char>> g;
 
 //dp(i,j) -> returns lexicographically smallest string ending at (i,j)
 
-string rec(int i, int j) {
-    if(i == n-1 && j == n-1) return "";
-    string left = rec(i-1, j);
-    string up = rec(i,j-1);
-    string ans;
-    if(left < up) ans = left;
-    else ans = up;
+// int rec(int i, int j) {
+//     if(i == n-1 && j == n-1) return "";
+//     string left = rec(i-1, j);
+//     string up = rec(i,j-1);
+//     string ans;
+//     if(left < up) ans = left;
+//     else ans = up;
 
-    ans.push_back(g[i][j]);
+//     ans.push_back(g[i][j]);
 
-    return ans;
-}
+//     return ans;
+// }
 
+int dp[3001][3001];
 
 void solve() {
     cin>>n;
@@ -80,7 +81,13 @@ void solve() {
         }
     }
 
-    cout << rec(n-1, n-1) << nline;
+
+
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            
+        }
+    }
 
 }
 
