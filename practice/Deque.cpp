@@ -24,7 +24,7 @@ using namespace std;
 #define ss second
 #define float long double
 
-// #define int long long
+#define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -48,39 +48,27 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
-vvi g;
-int n,m;
 
-// int dp[]
-// ending at i
-int dp[100100];
-int rec(int i) {
-    if(dp[i] != -1) return dp[i];
-    int ans = 0;
-
-    for(auto & el : g[i]) {
-        ans = max(ans, 1 + rec(el));
-    }
-
-    return dp[i] = ans;
+vi arr;
+// dp(l, r) -> returns final value of X - Y
+// both will pick the maximum of either
+int dp[3001][3001];
+int rec(int l, int r) {
+    if(l == r) return arr[l];
+    if(dp[l][r] != -1) return dp[l][r];
+    int ans = max(arr[l] - rec(l+1, r), arr[r] - rec(l,r-1));
+    return dp[l][r] = ans;
 }
 
 void solve() {
-    cin>>n>>m;
-    g.resize(n+1);
-    rep(i,0,m) {
-        int a, b;
-        cin>>a>>b;
-        g[a].push_back(b);
-    }
+    int n;
+    cin>>n;
+    arr.resize(n);
+    inparr(arr);
     memset(dp, -1, sizeof(dp));
-    int ans = 0;
 
-    rep(i,1,n+1) {
-        ans = max(ans, rec(i));
-    }
+    cout << rec(0, n-1) << nline;
 
-    cout << ans << nline;
 }
 
 signed main() {

@@ -58,7 +58,7 @@ vvi vis;
 vi c;
 
 void dijkstra(pii st) {
-
+    // prioirty queue -> {dist, {city, fuel}}
     priority_queue<pair<int, pii>> pq;
     pq.push(mp(-0, st));
     dist[st.ff][st.ss] = 0;
@@ -73,13 +73,14 @@ void dijkstra(pii st) {
         vis[top_node][top_fuel] = 1;
 
         for(auto [v, p] : g[top_node]) {
+            // moving to the city only burns fuel(we are not buying fuel in this transition), and we are minimizing the cost.
             if(top_fuel >= p && dist[v][top_fuel - p] > dist[top_node][top_fuel] + 0) {
                 dist[v][top_fuel - p] = dist[top_node][top_fuel] + 0;
                 pq.push(mp(-dist[v][top_fuel - p], mp(v, top_fuel - p)));
             }
         } 
-
-        if(top_fuel < init_capcity && !vis[top_node][top_fuel+1] && dist[top_node][top_fuel+1] > dist[top_node][top_fuel] + c[top_node]) {
+        // refuelling 1 litre in the current city
+        if(top_fuel < init_capcity && dist[top_node][top_fuel+1] > dist[top_node][top_fuel] + c[top_node]) {
             dist[top_node][top_fuel+1] = dist[top_node][top_fuel] + c[top_node];
             pq.push(mp(-dist[top_node][top_fuel+1], mp(top_node, top_fuel + 1)));
         }
@@ -106,7 +107,7 @@ void solve()
     vis.assign(n+1, vector<int>(init_capcity + 1, 0));
 
     dijkstra({st_node, 0});
-
+    // it is always optimal to refuel just enough
     cout<<dist[en_node][0]<<nline;
 }
 

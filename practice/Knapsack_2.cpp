@@ -48,39 +48,41 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
-vvi g;
-int n,m;
 
-// int dp[]
-// ending at i
-int dp[100100];
-int rec(int i) {
-    if(dp[i] != -1) return dp[i];
-    int ans = 0;
+vi v, w;
+int n, req;
 
-    for(auto & el : g[i]) {
-        ans = max(ans, 1 + rec(el));
-    }
+long long dp[101][100100];
+long long rec(int i, int val) {
+    if(val < 0) return 1e15;
+    if(val == 0) return 0;
+    if(i >= n) return 1e15;
 
-    return dp[i] = ans;
+    if(dp[i][val] != -1) return dp[i][val];
+
+
+    long long ans = min(w[i] + rec(i+1, val - v[i]), rec(i+1, val));
+
+    return dp[i][val] = ans;
 }
 
 void solve() {
-    cin>>n>>m;
-    g.resize(n+1);
-    rep(i,0,m) {
-        int a, b;
-        cin>>a>>b;
-        g[a].push_back(b);
-    }
+    cin>>n>>req;
+    v.resize(n);
+    w.resize(n);
+
     memset(dp, -1, sizeof(dp));
-    int ans = 0;
 
-    rep(i,1,n+1) {
-        ans = max(ans, rec(i));
+    rep(i,0,n) cin>>w[i]>>v[i];
+
+
+    for(int i = 1e5 + 1; i >= 0; i--) {
+        if(rec(0, i) <= req) {
+            cout << i << nline;
+            break;
+        }
     }
 
-    cout << ans << nline;
 }
 
 signed main() {

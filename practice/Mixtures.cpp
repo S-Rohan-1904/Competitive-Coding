@@ -48,39 +48,27 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
-vvi g;
-int n,m;
+vi arr;
+vi pre;
 
-// int dp[]
-// ending at i
-int dp[100100];
-int rec(int i) {
-    if(dp[i] != -1) return dp[i];
-    int ans = 0;
-
-    for(auto & el : g[i]) {
-        ans = max(ans, 1 + rec(el));
-    }
-
-    return dp[i] = ans;
+int getBagValue(int l, int r) {
+    return (pre[r+1] - pre[l]) % 100;
 }
 
-void solve() {
-    cin>>n>>m;
-    g.resize(n+1);
-    rep(i,0,m) {
-        int a, b;
-        cin>>a>>b;
-        g[a].push_back(b);
-    }
-    memset(dp, -1, sizeof(dp));
-    int ans = 0;
+int dp[101][101];
 
-    rep(i,1,n+1) {
-        ans = max(ans, rec(i));
+int rec(int l, int r) {
+    if(l == r) return 0;
+    if(dp[l][r] != -1) return dp[l][r];
+    int ans = 1e9;
+    for(int mid = l; mid < r; mid++) {
+        int leftBagValue = getBagValue(l, mid);
+        int rightBagValue = getBagValue(mid + 1, r);     
+        ans = min(ans, leftBagValue * rightBagValue + rec(l, mid) + rec(mid+1, r));
     }
+    // pr(l, r, ans);
 
-    cout << ans << nline;
+    return dp[l][r] = ans;
 }
 
 signed main() {
@@ -89,6 +77,19 @@ signed main() {
     cout.tie(0);
     int t = 1;
     // cin >> t;
-    while (t--)
-    solve();
+    while (true) {
+        int n;
+        if(!(cin>>n)) break;
+        arr.resize(n);
+        pre.assign(n+1, 0);
+        inparr(arr);
+
+        rep(i,0,n) {
+            pre[i+1] = pre[i] + arr[i];
+        }
+
+        memset(dp, -1, sizeof(dp));
+
+        cout << rec(0, n-1) << nline;
+    }
 }

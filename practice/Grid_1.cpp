@@ -48,39 +48,35 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
-vvi g;
 int n,m;
+vvi g;
 
-// int dp[]
-// ending at i
-int dp[100100];
-int rec(int i) {
-    if(dp[i] != -1) return dp[i];
+
+// dp(i,j) -> number of paths ending at (i,j)
+int dp[1001][1001];
+int rec(int i, int j) {
+    if( i < 0 || j < 0) return 0;
+    if(i == 0 && j == 0) return 1;
+    if(dp[i][j] != -1) return dp[i][j];
     int ans = 0;
+    if(g[i][j] == 0) ans = (rec(i-1, j)%MOD + rec(i,j-1)%MOD)%MOD;
 
-    for(auto & el : g[i]) {
-        ans = max(ans, 1 + rec(el));
-    }
-
-    return dp[i] = ans;
+    return dp[i][j] = ans;
 }
 
 void solve() {
     cin>>n>>m;
-    g.resize(n+1);
-    rep(i,0,m) {
-        int a, b;
-        cin>>a>>b;
-        g[a].push_back(b);
-    }
+    g.resize(n, vi(m));
     memset(dp, -1, sizeof(dp));
-    int ans = 0;
 
-    rep(i,1,n+1) {
-        ans = max(ans, rec(i));
+    rep(i,0,n) {
+        string s;
+        cin>>s;
+        rep(j,0,m) {
+            g[i][j] = (s[j] == '.' ? 0 : 1);
+        }
     }
-
-    cout << ans << nline;
+    cout << rec(n-1,m-1) << nline;
 }
 
 signed main() {

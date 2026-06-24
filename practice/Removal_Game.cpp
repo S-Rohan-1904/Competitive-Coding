@@ -48,39 +48,52 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
-vvi g;
-int n,m;
+vi arr;
+int n;
 
-// int dp[]
-// ending at i
-int dp[100100];
-int rec(int i) {
-    if(dp[i] != -1) return dp[i];
-    int ans = 0;
 
-    for(auto & el : g[i]) {
-        ans = max(ans, 1 + rec(el));
+int rec(int i, int j, int p) {
+    if(i > n || j < 0) return -1e9;
+    if(i > j) return 0;
+    int ans = max(arr[i] + rec(i+1, j, !p), arr[j] + rec(i, j-1, !p));
+    return ans;
+}
+
+long long final = 0;
+
+void gen(int i, int j, int p) {
+    if(i > n || j < 0) return;
+    if(i > j) return;
+    int ans = rec(i,j,p);
+    if(p == 0) {
+        if(ans == arr[i] + rec(i+1, j, !p)) {
+            final += arr[i];
+            gen(i+1, j, !p);
+            return;
+        } else {
+            final += arr[j];
+            gen(i, j-1, !p);
+            return;
+        }
+    } else {
+        if(ans == arr[i] + rec(i+1, j, !p)) {
+            gen(i+1, j, !p);
+            return;
+        } else {
+            gen(i, j-1, !p);
+            return;
+        }
+
     }
-
-    return dp[i] = ans;
+    
 }
 
 void solve() {
-    cin>>n>>m;
-    g.resize(n+1);
-    rep(i,0,m) {
-        int a, b;
-        cin>>a>>b;
-        g[a].push_back(b);
-    }
-    memset(dp, -1, sizeof(dp));
-    int ans = 0;
-
-    rep(i,1,n+1) {
-        ans = max(ans, rec(i));
-    }
-
-    cout << ans << nline;
+    cin>>n;
+    arr.resize(n);
+    inparr(arr);
+    gen(0,n-1,0);
+    cout << final << nline;
 }
 
 signed main() {

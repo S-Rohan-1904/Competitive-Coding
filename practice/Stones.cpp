@@ -48,39 +48,36 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
-vvi g;
-int n,m;
 
-// int dp[]
-// ending at i
-int dp[100100];
-int rec(int i) {
+int n,k;
+vi arr;
+int dp[100001];
+
+// true -> winning state
+// false -> losing state
+bool rec(int i) {
+    if(i==0) return 0;
     if(dp[i] != -1) return dp[i];
     int ans = 0;
-
-    for(auto & el : g[i]) {
-        ans = max(ans, 1 + rec(el));
+    for(auto & ch : arr) {
+        // pr(i-ch);
+        if(i-ch >= 0 && rec(i - ch) == 0) {
+            ans = 1;
+            break;
+        }
     }
-
+    // pr(i, ans);
     return dp[i] = ans;
 }
-
 void solve() {
-    cin>>n>>m;
-    g.resize(n+1);
-    rep(i,0,m) {
-        int a, b;
-        cin>>a>>b;
-        g[a].push_back(b);
-    }
+    cin>>n>>k;
     memset(dp, -1, sizeof(dp));
-    int ans = 0;
+    arr.resize(n);
+    inparr(arr);
 
-    rep(i,1,n+1) {
-        ans = max(ans, rec(i));
-    }
-
-    cout << ans << nline;
+    int ans = rec(k);
+    if(ans == 1) cout << "First" << nline;
+    else cout << "Second" << nline;
 }
 
 signed main() {
