@@ -49,64 +49,46 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
-class MonotoneDeque {
-private:
-    deque<long long> mdq;
-public:
-    MonotoneDeque() {}
-    void push(long long val) {
-        while(!mdq.empty() && val < mdq.back()) {
-            mdq.pop_back();
-        }
-        mdq.push_back(val);
-    }
-
-    long long getMinimum() {
-        return mdq.front();
-    }
-
-    void pop(long long val) {
-        if(mdq.front() == val) {
-            mdq.pop_front();
-        }
-    }
-};
-
 void solve() {
-    int n, k;
+    int n,k;
     cin>>n>>k;
-    vi nums(n);
-    inparr(nums);
-    vector<long long> dp(n);
-    MonotoneDeque mdq;
-    dp[0] = 0;
-    mdq.push(dp[0] + nums[0]);
+    vi arr(n);
+    inparr(arr);
 
-    for(int i = 1; i < n; i++) {
-        dp[i] = mdq.getMinimum();
-        mdq.push(dp[i] + nums[i]);
-        if (i - k >= 0)
-            mdq.pop(dp[i-k] + nums[i-k]);
+    vector<vector<int>> dp(n+1, vector<int>(k+1, 0));
+    dp[n][0] = 1;
+    for(int i = n; i >= 0; i--) {
+        for(int sumLeft = 0; sumLeft <= k; sumLeft++) {
+            if(i == n) {
+                dp[i][sumLeft] = (sumLeft == 0) ? 1 : 0;
+                continue;
+            }
+            long long current_ways = dp[i+1][sumLeft];
+            if(sumLeft - arr[i] - 1 >= 0) {
+                current_ways = (current_ways - dp[i+1][sumLeft-arr[i]-1] + MOD) % MOD;
+            }
+            dp[i][sumLeft] = current_ways;
+        }
+        
+        for(int sumLeft = 1; sumLeft <= k; sumLeft++) {
+            dp[i][sumLeft] = (dp[i][sumLeft] + dp[i][sumLeft - 1]) % MOD;
+        }
     }
-
-    long long ans = 1e17;
-    for(int i = 0; i < n; i++) {
-        ans = min(ans, dp[i]);
+    
+    int ans = dp[0][k];
+    if (k - 1 >= 0) {
+        ans = (ans - dp[0][k-1] + MOD) % MOD;
     }
-    cout << dp[n - 1] << nline;
+    cout << ans << nline;
 
 }
 
-
-   
-
-
 signed main() {
-  ios_base::sync_with_stdio(0);
-  cin.tie(0);
-  cout.tie(0);
-  int t = 1;
-  cin >> t;
-  while (t--)
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    int t = 1;
+    // cin >> t;
+    while (t--)
     solve();
 }
