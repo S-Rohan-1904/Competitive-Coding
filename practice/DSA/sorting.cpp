@@ -32,6 +32,34 @@ void insertionSort(int n, vector<int> & arr){
     }
 }
 
+// O(N logN) -> avg
+// Worst case is O(N^2) if pivot is always being smallest or largest element
+
+// this makes all elements to the left of the pivot <= the pivot value
+int partition(int low, int high, int n, vector<int>&arr) {
+    // putting all elements <= pivot in the right position
+    int idx = low; 
+    int pivot = arr[high];
+    for(int j = low; j < high; j++) {
+        if(arr[j] <= pivot) {
+            swap(arr[j], arr[idx]);
+            idx++;
+        }
+    }
+    // fixing the pivot's pos
+    idx++;
+    swap(arr[idx], arr[high]);
+    return idx;
+}
+
+void quickSort(int low, int high, int n, vector<int> & arr) {
+    if(low >= high) return;
+    int pivotIdx = partition(low, high, n, arr);
+    // FIX: Exclude the pivot from both sides
+    quickSort(low, pivotIdx - 1, n, arr);
+    quickSort(pivotIdx + 1, high, n, arr);
+}
+
 void merge(int low, int mid, int high, vector<int> & arr) {
 
     int i = low, j = mid+1;
