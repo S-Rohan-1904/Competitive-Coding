@@ -24,7 +24,7 @@ using namespace std;
 #define ss second
 #define float long double
 
-// #define int long long
+#define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -50,7 +50,22 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 void solve() {
-    
+    int n;
+    cin>>n;
+    vi arr(n);
+    inparr(arr);
+
+    sort(arr.begin(), arr.end());
+    pr(arr);
+    int target = 1;
+    int ans = 0;
+    rep(i,0,n) {
+        if(target > arr[i]) continue;
+        pr(i, arr[i], target);
+        ans += arr[i] - target;
+        target++;
+    }
+    cout << ans << nline;    
 }
 
 signed main() {
@@ -60,5 +75,5 @@ signed main() {
     int t = 1;
     cin >> t;
     while (t--)
-        solve();
+    solve();
 }

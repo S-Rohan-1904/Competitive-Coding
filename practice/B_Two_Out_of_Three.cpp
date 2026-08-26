@@ -50,8 +50,55 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 void solve() {
+    int n;
+    cin>>n;
+    vi arr(n);
+    inparr(arr);
+
+    map<int,int> freq;
+
+    for(auto & x: arr) freq[x]++;
     
+    int cnt = 0;
+    map<int,vector<int>> indices;
+    rep(i,0,n) {
+        int x = arr[i];
+        indices[x].push_back(i);
+    }
+
+    for(auto &[key, val] : freq) {
+        if(val >= 2) cnt++;
+    }
+
+    // pr(arr);
+    // pr(cnt);
+
+    if(cnt >= 2) {
+        vi ans(n, 1);
+        int b = 2;
+        for(auto & rec : indices) {
+            int x = rec.first;
+            vi & idxs = rec.second;
+            if(idxs.size() >= 2) {
+                // pr(x, idxs.back(), b);
+                // pr(nline);
+                ans[idxs.back()] = b;
+                idxs.pop_back();
+    
+                b = 3;
+            }
+        }
+
+        for(auto & el : ans) cout << el << " ";
+        cout << nline;
+    } else {
+        cout << -1 << nline;
+    }
+
 }
+
+// 1 2 3 2 2 3
+// 1 1 1 1 2 3 
 
 signed main() {
     ios_base::sync_with_stdio(0);
@@ -60,5 +107,5 @@ signed main() {
     int t = 1;
     cin >> t;
     while (t--)
-        solve();
+    solve();
 }

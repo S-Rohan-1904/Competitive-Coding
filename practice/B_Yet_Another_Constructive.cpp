@@ -50,7 +50,23 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 void solve() {
-    
+    int n, k, m;
+    cin>>n>>k>>m;
+
+    if(k > m) {
+        prn;
+        return;
+    }
+    pry;
+    for(int i = 0; i < k - 1; i++) {
+        cout << 1 << " ";
+    }
+    cout << m - k + 1 << " ";
+
+    for(int i = k; i < n; i++) {
+        cout << 1 << " ";
+    }
+    cout << nline;
 }
 
 signed main() {
@@ -60,5 +76,5 @@ signed main() {
     int t = 1;
     cin >> t;
     while (t--)
-        solve();
+    solve();
 }

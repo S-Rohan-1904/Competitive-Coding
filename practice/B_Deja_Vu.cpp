@@ -50,7 +50,40 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 void solve() {
+    int n, q;
+    cin>>n>>q;
     
+    vi arr(n);
+    inparr(arr);
+    
+    vvi bucket(31);
+
+    rep(i,0,n) {
+        bucket[__builtin_ctz(arr[i])].push_back(i);
+    }
+    // pr(arr);
+    while(q--) {
+        int x;
+        cin>>x;
+        // pr(x);
+        rep(i, x, 31) {
+            vi & indices = bucket[i];
+            if(indices.size() > 0) {
+                for(auto & idx : indices) {
+                    arr[idx] += (1 << (x - 1));
+                }
+    
+                bucket[x - 1].insert(bucket[x-1].end(), bucket[i].begin(), bucket[i].end());
+                bucket[i].clear();
+            }
+        }
+        // pr(bucket);
+        // pr(arr);
+    }
+
+    for(auto & x : arr) cout << x << " ";
+    cout << nline;
+
 }
 
 signed main() {
@@ -60,5 +93,5 @@ signed main() {
     int t = 1;
     cin >> t;
     while (t--)
-        solve();
+    solve();
 }

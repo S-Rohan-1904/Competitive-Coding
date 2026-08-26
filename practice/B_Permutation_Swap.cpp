@@ -50,7 +50,23 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 void solve() {
-    
+    // 4 2 6 7 5 3 1
+    // 1 2 3 4 5 6 7
+    // we can't brute force over all k 
+    // we can't do bs also because of i - j = k
+
+    int n;
+    cin>>n;
+
+    vi arr(n);
+    inparr(arr);
+
+    int ans = 0;
+    rep(i,1,n+1) {
+        if(arr[i-i] - i != 0) ans = ans == 0 ? arr[i-1] - i : __gcd(ans, abs(arr[i-1] - i));
+        // cout << arr[i - 1] - i << " ";
+    }
+    cout<< ans << nline;
 }
 
 signed main() {
@@ -60,5 +76,5 @@ signed main() {
     int t = 1;
     cin >> t;
     while (t--)
-        solve();
+    solve();
 }

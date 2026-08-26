@@ -24,7 +24,7 @@ using namespace std;
 #define ss second
 #define float long double
 
-// #define int long long
+#define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -48,9 +48,26 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
+vector<int> curr;
+
 
 void solve() {
+    int n;
+    cin>>n;
     
+    if(n == 1) cout << 1 << nline;
+    else if(n == 2) cout << -1 << nline;
+    else {
+        vector<int> arr = {1,2,3};
+        int sum = 6;
+        for(int i = 3; i < n; i++) {
+            arr.push_back(sum);
+            sum *= 2;
+        }
+
+        for(auto & x: arr) cout << x << " ";
+        cout << nline;
+    }
 }
 
 signed main() {
@@ -60,5 +77,5 @@ signed main() {
     int t = 1;
     cin >> t;
     while (t--)
-        solve();
+    solve();
 }

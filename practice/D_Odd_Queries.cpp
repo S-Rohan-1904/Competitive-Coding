@@ -50,7 +50,24 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 void solve() {
-    
+    int n, q;
+    cin>>n>>q;
+    vi arr(n);
+    inparr(arr);
+
+    rep(i,1,n) {
+        arr[i] += arr[i-1];
+    }
+
+
+    while(q--) {
+        int l, r, k;
+        cin>>l>>r>>k;
+        int sum = arr[n-1];
+        int curr = sum - (arr[r - 1] - (l == 1 ? 0 : arr[l - 2])) + (r - l + 1) * k;
+        if(curr & 1) pry;
+        else prn;
+    }
 }
 
 signed main() {
@@ -60,5 +77,5 @@ signed main() {
     int t = 1;
     cin >> t;
     while (t--)
-        solve();
+    solve();
 }

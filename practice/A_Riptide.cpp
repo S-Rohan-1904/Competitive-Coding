@@ -50,7 +50,12 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 void solve() {
-    
+    vi arr(3);
+    inparr(arr);
+
+    sort(all(arr));
+
+    cout << min(arr[1] - arr[0], arr[2] - arr[1]) << nline;
 }
 
 signed main() {
@@ -60,5 +65,5 @@ signed main() {
     int t = 1;
     cin >> t;
     while (t--)
-        solve();
+    solve();
 }

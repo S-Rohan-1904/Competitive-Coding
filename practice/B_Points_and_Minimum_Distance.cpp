@@ -50,7 +50,35 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 void solve() {
-    
+    int n;
+    cin>>n;
+    vi temp(2*n);
+    inparr(temp);
+
+    vpii arr(n);
+
+    sort(all(temp));
+
+
+    int ans = 0;
+    rep(i,0,n) {
+        arr[i].first = temp[i];
+        // ans += temp[i] - temp[i-1];
+    }
+
+    rep(i,n, 2*n) {
+        arr[i - n].second = temp[i];
+    }
+
+    rep(i,1,n) ans += temp[i] - temp[i-1];
+    rep(i,n+1,2*n) ans += temp[i] - temp[i-1];
+
+    cout << ans << nline;
+
+    for(auto &[x, y] : arr) {
+        cout << x << ' ' << y << nline;
+    }
+
 }
 
 signed main() {
@@ -60,5 +88,5 @@ signed main() {
     int t = 1;
     cin >> t;
     while (t--)
-        solve();
+    solve();
 }

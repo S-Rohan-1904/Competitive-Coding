@@ -50,7 +50,38 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 void solve() {
-    
+    int n,m;
+    cin>>n>>m;
+    string s,t;
+    cin>>s>>t;
+    bool zerozero = 0, oneone = 0;
+    rep(i,1,n) {
+        if(s[i] == s[i - 1]) {
+            if(s[i] == '1') oneone = 1;
+            else zerozero = 1;
+        }
+    }
+    pr(s, t);
+    if(!oneone && !zerozero) pry;
+    else {
+        rep(i,1,m) {
+            if(t[i] == t[i - 1]) {
+                prn;
+                return;
+            }
+        }
+
+        if(oneone && zerozero) prn;
+        else if(oneone) {
+            pr(1);
+            if(t[0] == '0' && t[m-1] == '0') pry;
+            else prn;
+        }
+        else if(zerozero) {
+            if(t[0] == '1' && t[m-1] == '1') pry;
+            else prn;
+        }
+    }
 }
 
 signed main() {
@@ -60,5 +91,5 @@ signed main() {
     int t = 1;
     cin >> t;
     while (t--)
-        solve();
+    solve();
 }

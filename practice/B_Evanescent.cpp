@@ -50,7 +50,41 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 void solve() {
-    
+    int n;
+    string s;
+    cin>>n>>s;
+
+    int ans = 0;
+    char curr = s[0];
+    int i = 1;
+    while(i < n) {
+        ans++;
+        while(i < n && s[i] == curr) {
+            i++;
+        }
+        curr = s[i];
+    }
+
+    vector<int> freq(26, 0);
+    for(auto & ch : s) freq[ch - 'a']++;
+
+    for(int i = 1; i < n - 1; i++) {
+        if(s[i - 1] == s[i + 1] && s[i-1] != s[i]) {
+            cout << ans - 2 << nline;
+            // pry;
+            return;
+        }
+    }
+
+    for(int i = 1; i < n - 1; i++) {
+        if(s[i - 1] != s[i + 1] && s[i-1] != s[i] && s[i] != s[i+1]) {
+            cout << ans - 1 << nline;
+            // pry;
+            return;
+        }
+    }
+
+    cout << ans << nline;
 }
 
 signed main() {
@@ -60,5 +94,5 @@ signed main() {
     int t = 1;
     cin >> t;
     while (t--)
-        solve();
+    solve();
 }
