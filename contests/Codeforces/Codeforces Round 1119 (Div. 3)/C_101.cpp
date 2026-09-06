@@ -2,7 +2,7 @@
 using namespace std;
 
 #define rep(i, l, r) for (int i = l; i < r; i++)
-#define rrep(i, r, l) for (int i = r-1; i >=0; i--)
+#define rrep(i, r, l) for (int i = r; i >=0; i--)
 #define ll long long
 #define nline '\n'
 #define prn cout << "NO" << nline
@@ -54,53 +54,30 @@ void solve() {
     cin>>n;
     vi arr(n);
     inparr(arr);
- 
-    int firstOne = -1, lastOne = -1;
+
     rep(i,0,n) {
         if(arr[i] == 1) {
-            if(firstOne == -1) firstOne = i;
-            lastOne = i;
+            break;
+        }
+        if(arr[i] == -1) {
+            arr[i] = 1;
+            break;
         }
     }
- 
-    int besti = -1, bestj = -1, bestLen = 0;
-    auto upd = [&](int i, int j) {
-        if(i < 0 || j < 0 || i >= j) return;
-        if(j - i + 1 > bestLen) {
-            bestLen = j - i + 1;
-            besti = i;
-            bestj = j;
+    
+    rrep(i,n-1,0) {
+        if(arr[i] == 1) {
+            break;
         }
-    };
- 
-    if(firstOne == -1) {
-        int f = -1, l = -1;
-        rep(i,0,n) {
-            if(arr[i] == -1) {
-                if(f == -1) f = i;
-                l = i;
-            }
+        if(arr[i] == -1) {
+            arr[i] = 1;
+            break;
         }
-        if(f != -1 && l != f) upd(f, l);
-        else if(f != -1) { besti = bestj = f; bestLen = 1; }
-    } else {
-        int prev = -1;
-        rep(i,0,n) {
-            if(arr[i] == 1) {
-                if(prev != -1) upd(prev, i);
-                prev = i;
-            }
-        }
-        rep(i,0,firstOne) if(arr[i] == -1) { upd(i, firstOne); break; }
-        for(int i = n-1; i > lastOne; i--) if(arr[i] == -1) { upd(lastOne, i); break; }
     }
- 
-    pr(besti, bestj, bestLen);
- 
-    rep(i,0,n) if(arr[i] == -1) arr[i] = 0;
-    if(besti != -1) { arr[besti] = 1; arr[bestj] = 1; }
- 
-    rep(i,0,n) cout << arr[i] << ' ';
+
+    rep(i,0,n) {
+        cout << (arr[i] == -1 ? 0 : arr[i]) << " ";
+    }
     cout << nline;
 }
 
