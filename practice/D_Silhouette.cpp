@@ -24,7 +24,7 @@ using namespace std;
 #define ss second
 #define float long double
 
-// #define int long long
+#define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -46,7 +46,7 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 #endif
 //----------------- //
 
-const int MOD = 998244353;
+const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 void solve() {
@@ -55,16 +55,49 @@ void solve() {
     vi arr(n);
     inparr(arr);
 
-    sort(all(arr));
-
-    int sum = arr[0];
-    int ans = 0;
-    rep(i,1,n) {
-        ans += ((i%MOD)*(arr[i]%MOD)%MOD - sum%MOD + MOD)%MOD;
-        sum = (sum%MOD + arr[i]%MOD)%MOD;
+    if(*min_element(all(arr)) != 0) {
+        cout << -1 << nline;
+        return;
     }
 
-    cout << ans << nline;
+    map<int,int> mp;
+    map<int,int> temp;
+
+    for(auto & x : arr) mp[x]++;
+
+    auto it1 = mp.begin();
+    int sum = 0;
+    // pr(arr);
+    while(it1 != mp.end()) {
+        auto it2 = next(it1);
+        if(it2 != mp.end()) {
+            // pr(it1->first, it1->second);
+            // pr(it2->first, it2->second);
+            // pr(sum);
+            if((it2->first - sum)% it1->second != 0) {
+                cout << -1 << nline;
+                return;
+            } 
+            temp[it1->first] = (it2->first - sum) / it1->second;
+            if(it1 != mp.begin() && temp[it1->first] <= temp[prev(it1)->first]) {
+                cout << -1 << nline;
+                return;
+            } 
+            sum += it1->second * temp[it1->first];
+        }
+        it1 = next(it1);
+    }
+    // pr(temp);
+
+    for(auto & x : arr) {
+        if(temp.count(x)) {
+            cout << temp[x] << " ";
+        } else {
+            if(temp.size() == 0) cout << 1 << " ";
+            else cout << temp.rbegin()->second + 1 << " ";
+        }
+    }
+    cout << nline;
 }
 
 signed main() {

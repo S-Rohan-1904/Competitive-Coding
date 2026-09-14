@@ -46,25 +46,33 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 #endif
 //----------------- //
 
-const int MOD = 998244353;
+const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 void solve() {
-    int n;
-    cin>>n;
-    vi arr(n);
-    inparr(arr);
-
-    sort(all(arr));
-
-    int sum = arr[0];
-    int ans = 0;
-    rep(i,1,n) {
-        ans += ((i%MOD)*(arr[i]%MOD)%MOD - sum%MOD + MOD)%MOD;
-        sum = (sum%MOD + arr[i]%MOD)%MOD;
+    int n, k;
+    cin >> n >> k;
+    string s;
+    cin>>s;
+    int r = 0, b = 0;
+    int m = 2 * n;
+    rep(i,0,m) {
+        if(i & 1) r += (s[i] - '0');
+        else b += (s[i] - '0');
     }
-
-    cout << ans << nline;
+    s.push_back(s[0]);
+    rep(i,0,m) {
+        if(s[i] == '1' && s[i+1] == '0') {
+            if(i & 1) {
+                b++;
+                r--;
+            } else {
+                b--;
+                r++;
+            }
+        }
+    }
+    cout << r << " " << b << nline;
 }
 
 signed main() {
