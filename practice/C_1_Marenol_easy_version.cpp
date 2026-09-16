@@ -50,7 +50,41 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 void solve() {
-    
+    int n;
+    string s, t;
+    cin>>n>>s>>t;
+
+    int cnt0 = 0, cnt1 = 0;
+
+    for(int i = 0; i < n; i+=2) {
+        if(s[i] == '0') cnt0++;
+        if(s[i] == '1') cnt1++;
+        if(t[i] == '0') cnt0--;
+        if(t[i] == '1') cnt1--;
+    }
+
+    if(cnt0 != 0 || cnt1 != 0) {
+        prn;
+        return;
+    }
+
+    cnt0 = 0;
+    cnt1 = 0;
+
+    for(int i = 1; i < n; i+=2) {
+        if(s[i] == '0') cnt0++;
+        if(s[i] == '1') cnt1++;
+        if(t[i] == '0') cnt0--;
+        if(t[i] == '1') cnt1--;
+    }
+
+    if(cnt0 != 0 || cnt1 != 0) {
+        prn;
+        return;
+    }
+
+    pry;
+
 }
 
 signed main() {

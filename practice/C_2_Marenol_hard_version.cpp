@@ -24,7 +24,7 @@ using namespace std;
 #define ss second
 #define float long double
 
-// #define int long long
+#define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -49,7 +49,50 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
+// 01001
+// 10010
+
 void solve() {
+    int n;
+    string s, t;
+    cin>>n>>s>>t;
+
+    vi arr1, arr2;
+    int ans = 0;
+    for(int i = 0; i < n; i+=2) {
+        if(s[i] == '1') arr1.push_back(i);
+        if(t[i] == '1') arr2.push_back(i);
+    }
+
+    if(arr1.size() == arr2.size()) {
+        int m = arr1.size();
+        rep(i,0,m) {
+            ans += abs(arr1[i] - arr2[i])/2;
+        }
+    } else {
+        cout << -1 << nline;
+        return;
+    }
+
+    arr1.clear();
+    arr2.clear();
+
+    for(int i = 1; i < n; i+=2) {
+        if(s[i] == '1') arr1.push_back(i);
+        if(t[i] == '1') arr2.push_back(i);
+    }
+
+    if(arr1.size() == arr2.size()) {
+        int m = arr1.size();
+        rep(i,0,m) {
+            ans += abs(arr1[i] - arr2[i])/2;
+        }
+    } else {
+        cout << -1 << nline;
+        return;
+    }
+
+    cout << ans << nline;
     
 }
 

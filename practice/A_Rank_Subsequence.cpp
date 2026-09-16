@@ -2,7 +2,7 @@
 using namespace std;
 
 #define rep(i, l, r) for (int i = l; i < r; i++)
-#define rrep(i, r, l) for (int i = r; i >=0; i--)
+#define rrep(i, r, l) for (int i = r; i >= l; i--)
 #define ll long long
 #define nline '\n'
 #define prn cout << "NO" << nline
@@ -49,8 +49,55 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
+bool canSatify(pii interval1, pii interval2, int m, int i) {
+    pii normalised;
+    normalised.first = m - interval2.second + 1;
+    normalised.second = m - interval2.first + 1;
+    pr(i, interval1, normalised);
+
+    if(normalised.first < interval1.first) {
+        swap(normalised, interval1);
+    } else if(normalised.first == interval1.first && normalised.second < interval1.first) {
+        swap(normalised, interval1);
+    }
+    if(i >= interval1.first && i <= interval1.second) return false;
+    if(i >= normalised.first && i <= normalised.second) return false;
+    return true;
+}
+
 void solve() {
-    
+    int n;
+    cin>>n;
+    vpii lr, uv;
+
+    rep(i,0,n) {
+        int l,r,u,v;
+        cin>>l>>r>>u>>v;
+        lr.push_back({l, r});
+        uv.push_back({u, v});
+    }
+    pr(lr);
+    pr(uv);
+    for(int m = n; m >= 1; m--) {
+        int idx = 0;
+        pr(m);
+        rep(i,0,n) {
+            pr(i, idx);
+            if(canSatify(lr[i], uv[i], m, idx + 1)) {
+                pr('y');
+                idx++;
+            }
+            // pr("f", i, idx);
+            if(idx >= m) {
+                pr(nline);
+                cout << m << nline;
+                return;
+            }
+        }
+    }
+    pr(nline);
+
+    cout << 0 << nline;
 }
 
 signed main() {
