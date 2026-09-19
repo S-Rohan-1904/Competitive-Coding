@@ -24,7 +24,7 @@ using namespace std;
 #define ss second
 #define float long double
 
-#define int long long
+// #define int long long
 
 //---- Debugger ---- //
 #ifdef LOCAL
@@ -50,99 +50,30 @@ const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
 /*
-array is sorted -> there has to be some use to this
+how does alice guarantee win
 
-we don't care abt how big or small the element is -> we only care abt si != si-1
+alice wins whenever the array can be transformed into losing state
 
-First element is the only exceptional case
+what is a losing state?
 
-first check if this element is masked by some other simpler equivalent operation
-
-0 1 2 3
-1 1 2 2
-dup -> 1 1 1 2 2 2
-del -> 1 2
-
-
-is the order of deletion and duplication operation fixed
-
-if we delete and then duplicate it has to be so that we increase the number of si != si-1 coiunt since the array is sorted
-should we delete in between 
-
-if we duplicate first to increase length
-the length increases by number of elements where the condition is true + 1 (the first element)
-that is fixed
-
-1 1 1 2 2 2 2 2, k = 6
-1 1 2 2 2 2
-
-2 2 2 2 2 2
-
-aaaa | bbbb | cccc
-partirion -> conseq char seq
-each partition's length can be reduced by 1
-each partition's length can be increased by 1
-
-so the overall decrease/increase in length is always by the number of such partitions
-
-lets' say we have 3 partitions then 
-either reduce it to 2 partitions and increase length by 2
-reducing partitions is dependent on the length of the partitions
-
-there can be max O(N) paritions
-x is the number of partitions currently
-x -> (k - len) % x == 0
-
-x - 1 -> (k - len') % x == 0
-increase by 1 each time the condition is satisfied
-now how to find len' (should be greater than 0) len' will be len - min(lengths of current partition) * number of current partitions
-how to calculate min length of partitions -> second min - first min
-
-1 1 2 2 2 3 3 3 3 4 4 4 4 4 -> len 14
-1 2 2 3 3 3 4 4 4 4 -> len 10
-2 3 3 4 4 4 -> len 6
-3 4 4 -> len 3
+from that array u can never choose an array b that is a losing state
 
 */
+
 void solve() {
-    int n, k;
-    cin>>n>>k;
-    
+    int n;
+    cin>>n;
     vi arr(n);
     inparr(arr);
-
-    map<int,int> freq;
-
-    rep(i,0,n) freq[arr[i]]++;
-
-    multiset<int> mt;
-
-    vector<int> blocks;
-
-    for(auto &[key, cnt] : freq) {
-        blocks.push_back(cnt);
+    int cnt = 0;
+    rep(i,0,n) {
+        if(arr[i] != 0) cnt++;
     }
-
-    sort(all(blocks));
-    vpii g;
-    for(long long x : blocks){
-        if(!g.empty() && g.back().first == x) g.back().second++;
-        else g.push_back({x, 1});
+    if(cnt >= 2) {
+        
+    } else {
+        cout << 0 << nline;
     }
-
-    int sz = n, cnt = blocks.size();
-    int ans = 0;
-    for(auto &pr : g){
-        int v = pr.first, c = pr.second;
-        int diff = k - sz;
-        if(diff % cnt == 0){
-            int D = diff / cnt;
-            if(D >= 1 - v) ans++;
-        }
-        sz -= v * c;
-        cnt -= c;
-    }
-    cout << ans << nline;
 }
 
 signed main() {

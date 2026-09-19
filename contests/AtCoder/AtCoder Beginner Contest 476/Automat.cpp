@@ -49,100 +49,53 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
 
-/*
-array is sorted -> there has to be some use to this
-
-we don't care abt how big or small the element is -> we only care abt si != si-1
-
-First element is the only exceptional case
-
-first check if this element is masked by some other simpler equivalent operation
-
-0 1 2 3
-1 1 2 2
-dup -> 1 1 1 2 2 2
-del -> 1 2
-
-
-is the order of deletion and duplication operation fixed
-
-if we delete and then duplicate it has to be so that we increase the number of si != si-1 coiunt since the array is sorted
-should we delete in between 
-
-if we duplicate first to increase length
-the length increases by number of elements where the condition is true + 1 (the first element)
-that is fixed
-
-1 1 1 2 2 2 2 2, k = 6
-1 1 2 2 2 2
-
-2 2 2 2 2 2
-
-aaaa | bbbb | cccc
-partirion -> conseq char seq
-each partition's length can be reduced by 1
-each partition's length can be increased by 1
-
-so the overall decrease/increase in length is always by the number of such partitions
-
-lets' say we have 3 partitions then 
-either reduce it to 2 partitions and increase length by 2
-reducing partitions is dependent on the length of the partitions
-
-there can be max O(N) paritions
-x is the number of partitions currently
-x -> (k - len) % x == 0
-
-x - 1 -> (k - len') % x == 0
-increase by 1 each time the condition is satisfied
-now how to find len' (should be greater than 0) len' will be len - min(lengths of current partition) * number of current partitions
-how to calculate min length of partitions -> second min - first min
-
-1 1 2 2 2 3 3 3 3 4 4 4 4 4 -> len 14
-1 2 2 3 3 3 4 4 4 4 -> len 10
-2 3 3 4 4 4 -> len 6
-3 4 4 -> len 3
-
-*/
 void solve() {
-    int n, k;
-    cin>>n>>k;
-    
-    vi arr(n);
-    inparr(arr);
+    int n, m, k;
+    cin>>n>>m>>k;
+    int x, y;
+    cin>>x>>y;
 
-    map<int,int> freq;
+    vi a(n);
+    vi b(m);
 
-    rep(i,0,n) freq[arr[i]]++;
+    inparr(a);
+    inparr(b);
+    sort(all(a));
+    sort(all(b));
+    pr(x,y,k);
 
-    multiset<int> mt;
+    vi preA(n+1, 0);
+    rep(i,0,n) preA[i+1] = preA[i] + a[i];
 
-    vector<int> blocks;
 
-    for(auto &[key, cnt] : freq) {
-        blocks.push_back(cnt);
+    vi preC(m+1, 0), preB(m+1, 0);
+    rep(i,0,m) {
+        int c = (b[i] + k - 1) / k;
+        preC[i+1] = preC[i] + c;
+        preB[i+1] = preB[i] + b[i];
     }
 
-    sort(all(blocks));
-    vpii g;
-    for(long long x : blocks){
-        if(!g.empty() && g.back().first == x) g.back().second++;
-        else g.push_back({x, 1});
-    }
 
-    int sz = n, cnt = blocks.size();
+    int maxS = 0;
+    rep(i,0,m) {
+        if(preC[i+1] <= y) maxS = i+1;
+        else break;
+    }
+    pr(maxS);
+
+    int total = x + y*k;
     int ans = 0;
-    for(auto &pr : g){
-        int v = pr.first, c = pr.second;
-        int diff = k - sz;
-        if(diff % cnt == 0){
-            int D = diff / cnt;
-            if(D >= 1 - v) ans++;
-        }
-        sz -= v * c;
-        cnt -= c;
+    int t = n;
+
+    rep(s,0,maxS+1) {
+        int budget = total - preB[s];
+        while(t > 0 && preA[t] > budget) t--;
+        ans = max(ans, s + t);
+        pr(s, budget, t, ans);
     }
+
     cout << ans << nline;
+
 }
 
 signed main() {
@@ -150,7 +103,7 @@ signed main() {
     cin.tie(0);
     cout.tie(0);
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
         solve();
 }
