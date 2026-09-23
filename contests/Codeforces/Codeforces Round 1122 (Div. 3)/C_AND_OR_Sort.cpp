@@ -48,50 +48,42 @@ template <class T> void prc(T a, T b) {cerr << "["; for (T i = a; i != b; ++i) {
 
 const int MOD = 1e9 + 7;
 const int INF = 1e9 + 1;
+int dp[2][2][2][200100];
 
+int rec(int level, int phase, int seen0, int seen1, string & s) {
+    int n = s.size();
+    if(level == n) return 0;
+
+    if(dp[phase][seen0][seen1][level] != -1) return dp[phase][seen0][seen1][level];
+
+    int ans = INT_MAX;
+
+    if(phase) {
+        if(s[level] == '1') {
+            ans = rec(level + 1, 1, seen0, 1, s);
+        } else {
+            ans = 1 + rec(level + 1, 1, 1, seen1, s);
+        }
+    } else {
+        if(s[level] == '1') {
+            ans = rec(level + 1, 1, seen0, 1, s);
+            if(seen0)
+            ans = min(ans, 1 + rec(level + 1, 0, 1, seen1, s));
+        } else {
+            ans = rec(level + 1, 0, 1, seen1, s);
+            if(seen1)
+                ans = min(ans, 1 + rec(level + 1, 1, seen0, 1, s));
+        }
+    }
+    return dp[phase][seen0][seen1][level] = ans;
+}
 
 void solve() {
     int n;
     string s;
     cin >> n >> s;
 
-    int dp[2][2][2][n + 1];
-
-
-    for(int level = n; level >= 0; level--) {
-        for(int phase = 0; phase < 2; phase++) {
-            for(int seen0 = 0; seen0 < 2; seen0++) {
-                for(int seen1 = 0; seen1 < 2; seen1++) {
-                    int ans = INT_MAX;
-                    if(level == n) {
-                        dp[phase][seen0][seen1][level] = 0;
-                        continue;
-                    }
-
-                    if(phase) {
-                        if(s[level] == '1') {
-                            ans = dp[1][seen0][1][level + 1];
-                        } else {
-                            ans = 1 + dp[1][1][seen1][level + 1];
-                        }
-                    } else {
-                        if(s[level] == '1') {
-                            ans = dp[1][seen0][1][level + 1];
-                            if(seen0)
-                            ans = min(ans, 1 + dp[0][1][seen1][level + 1]);
-                        } else {
-                            ans = dp[0][1][seen1][level + 1];
-                            if(seen1)
-                                ans = min(ans, 1 + dp[1][seen0][1][level + 1]);
-                        }
-                    }
-                    dp[phase][seen0][seen1][level] = ans;
-                }
-            }
-        }
-    }
-
-    cout << dp[0][0][0][0] << nline;
+    cout << rec(0, 0, 0, 0, s) << nline;
 }
 
 signed main() {
